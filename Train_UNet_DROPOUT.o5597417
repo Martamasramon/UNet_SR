@@ -1,0 +1,693 @@
+GPU Prolog Script v1.14
+This is a GPU node.
+Enough GPUs available.
+Allocating card 3
+dl mai 26 14:34:30 BST 2025
+Mon May 26 14:34:30 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 550.127.05             Driver Version: 550.127.05     CUDA Version: 12.4     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 4090        On  |   00000000:16:00.0 Off |                  Off |
+|  0%   31C    P8             30W /  450W |       1MiB /  24564MiB |      0%   E. Process |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA GeForce RTX 4090        On  |   00000000:34:00.0 Off |                  Off |
+|  0%   45C    P2            260W /  450W |   23743MiB /  24564MiB |    100%   E. Process |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA GeForce RTX 4090        On  |   00000000:52:00.0 Off |                  Off |
+|  0%   35C    P2             74W /  450W |     419MiB /  24564MiB |     14%   E. Process |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA GeForce RTX 4090        On  |   00000000:70:00.0 Off |                  Off |
+|  0%   31C    P8             29W /  450W |       1MiB /  24564MiB |      0%   E. Process |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    1   N/A  N/A     17911      C   python3                                     23736MiB |
+|    2   N/A  N/A      3507      C   gmx_mpi                                       412MiB |
++-----------------------------------------------------------------------------------------+
+Namespace(img_size=64, scale_factor=2, train_bs=16, test_bs=1, drop_main=0.1, drop_last=0.5, n_epochs=400, lr=0.001, factor=0.1, patience=10, cooldown=5, λ_pixel=1.0, λ_perceptual=0.01, percpt_delay=100, img_folder='/cluster/project7/backup_masramon/IQT/ADC/')
+
+Creating model...
+
+Creating datasets...
+Starting training...
+
+Epoch  0
+Learning rate : 0.001
+Training Loss: 0.0345 (Pixel: 0.0345, Perceptual: 0.0000)
+Validation Loss: 0.0458 (Pixel: 0.0458, Perceptual: 0.0000)
+Best model saved at /cluster/project7/ProsRegNet_CellCount/UNet_SR/checkpoints/checkpoints_2605_1435_best.pth
+
+Epoch  1
+Learning rate : 0.001
+Training Loss: 0.0228 (Pixel: 0.0228, Perceptual: 0.0000)
+Validation Loss: 0.0261 (Pixel: 0.0261, Perceptual: 0.0000)
+Best model saved at /cluster/project7/ProsRegNet_CellCount/UNet_SR/checkpoints/checkpoints_2605_1435_best.pth
+
+Epoch  2
+Learning rate : 0.001
+Training Loss: 0.0206 (Pixel: 0.0206, Perceptual: 0.0000)
+Validation Loss: 0.0253 (Pixel: 0.0253, Perceptual: 0.0000)
+Best model saved at /cluster/project7/ProsRegNet_CellCount/UNet_SR/checkpoints/checkpoints_2605_1435_best.pth
+
+Epoch  3
+Learning rate : 0.001
+Training Loss: 0.0187 (Pixel: 0.0187, Perceptual: 0.0000)
+Validation Loss: 0.0220 (Pixel: 0.0220, Perceptual: 0.0000)
+Best model saved at /cluster/project7/ProsRegNet_CellCount/UNet_SR/checkpoints/checkpoints_2605_1435_best.pth
+
+Epoch  4
+Learning rate : 0.001
+Training Loss: 0.0182 (Pixel: 0.0182, Perceptual: 0.0000)
+Validation Loss: 0.0218 (Pixel: 0.0218, Perceptual: 0.0000)
+Best model saved at /cluster/project7/ProsRegNet_CellCount/UNet_SR/checkpoints/checkpoints_2605_1435_best.pth
+
+Epoch  5
+Learning rate : 0.001
+Training Loss: 0.0182 (Pixel: 0.0182, Perceptual: 0.0000)
+Validation Loss: 0.0231 (Pixel: 0.0231, Perceptual: 0.0000)
+
+Epoch  6
+Learning rate : 0.001
+Training Loss: 0.0175 (Pixel: 0.0175, Perceptual: 0.0000)
+Validation Loss: 0.0219 (Pixel: 0.0219, Perceptual: 0.0000)
+
+Epoch  7
+Learning rate : 0.001
+Training Loss: 0.0170 (Pixel: 0.0170, Perceptual: 0.0000)
+Validation Loss: 0.0260 (Pixel: 0.0260, Perceptual: 0.0000)
+
+Epoch  8
+Learning rate : 0.001
+Training Loss: 0.0167 (Pixel: 0.0167, Perceptual: 0.0000)
+Validation Loss: 0.0230 (Pixel: 0.0230, Perceptual: 0.0000)
+
+Epoch  9
+Learning rate : 0.001
+Training Loss: 0.0161 (Pixel: 0.0161, Perceptual: 0.0000)
+Validation Loss: 0.0244 (Pixel: 0.0244, Perceptual: 0.0000)
+
+Epoch  10
+Learning rate : 0.001
+Training Loss: 0.0167 (Pixel: 0.0167, Perceptual: 0.0000)
+Validation Loss: 0.0233 (Pixel: 0.0233, Perceptual: 0.0000)
+
+Epoch  11
+Learning rate : 0.001
+Training Loss: 0.0162 (Pixel: 0.0162, Perceptual: 0.0000)
+Validation Loss: 0.0250 (Pixel: 0.0250, Perceptual: 0.0000)
+
+Epoch  12
+Learning rate : 0.001
+Training Loss: 0.0168 (Pixel: 0.0168, Perceptual: 0.0000)
+Validation Loss: 0.0249 (Pixel: 0.0249, Perceptual: 0.0000)
+
+Epoch  13
+Learning rate : 0.001
+Training Loss: 0.0159 (Pixel: 0.0159, Perceptual: 0.0000)
+Validation Loss: 0.0242 (Pixel: 0.0242, Perceptual: 0.0000)
+
+Epoch  14
+Learning rate : 0.001
+Training Loss: 0.0157 (Pixel: 0.0157, Perceptual: 0.0000)
+Validation Loss: 0.0232 (Pixel: 0.0232, Perceptual: 0.0000)
+
+Epoch  15
+Learning rate : 0.001
+Training Loss: 0.0154 (Pixel: 0.0154, Perceptual: 0.0000)
+Validation Loss: 0.0260 (Pixel: 0.0260, Perceptual: 0.0000)
+
+Epoch  16
+Learning rate : 0.0001
+Training Loss: 0.0150 (Pixel: 0.0150, Perceptual: 0.0000)
+Validation Loss: 0.0265 (Pixel: 0.0265, Perceptual: 0.0000)
+
+Epoch  17
+Learning rate : 0.0001
+Training Loss: 0.0149 (Pixel: 0.0149, Perceptual: 0.0000)
+Validation Loss: 0.0257 (Pixel: 0.0257, Perceptual: 0.0000)
+
+Epoch  18
+Learning rate : 0.0001
+Training Loss: 0.0148 (Pixel: 0.0148, Perceptual: 0.0000)
+Validation Loss: 0.0259 (Pixel: 0.0259, Perceptual: 0.0000)
+
+Epoch  19
+Learning rate : 0.0001
+Training Loss: 0.0147 (Pixel: 0.0147, Perceptual: 0.0000)
+Validation Loss: 0.0246 (Pixel: 0.0246, Perceptual: 0.0000)
+
+Epoch  20
+Learning rate : 0.0001
+Training Loss: 0.0147 (Pixel: 0.0147, Perceptual: 0.0000)
+Validation Loss: 0.0246 (Pixel: 0.0246, Perceptual: 0.0000)
+
+Epoch  21
+Learning rate : 0.0001
+Training Loss: 0.0147 (Pixel: 0.0147, Perceptual: 0.0000)
+Validation Loss: 0.0260 (Pixel: 0.0260, Perceptual: 0.0000)
+
+Epoch  22
+Learning rate : 0.0001
+Training Loss: 0.0147 (Pixel: 0.0147, Perceptual: 0.0000)
+Validation Loss: 0.0255 (Pixel: 0.0255, Perceptual: 0.0000)
+
+Epoch  23
+Learning rate : 0.0001
+Training Loss: 0.0146 (Pixel: 0.0146, Perceptual: 0.0000)
+Validation Loss: 0.0241 (Pixel: 0.0241, Perceptual: 0.0000)
+
+Epoch  24
+Learning rate : 0.0001
+Training Loss: 0.0147 (Pixel: 0.0147, Perceptual: 0.0000)
+Validation Loss: 0.0282 (Pixel: 0.0282, Perceptual: 0.0000)
+
+Epoch  25
+Learning rate : 0.0001
+Training Loss: 0.0146 (Pixel: 0.0146, Perceptual: 0.0000)
+Validation Loss: 0.0252 (Pixel: 0.0252, Perceptual: 0.0000)
+
+Epoch  26
+Learning rate : 0.0001
+Training Loss: 0.0146 (Pixel: 0.0146, Perceptual: 0.0000)
+Validation Loss: 0.0251 (Pixel: 0.0251, Perceptual: 0.0000)
+
+Epoch  27
+Learning rate : 0.0001
+Training Loss: 0.0146 (Pixel: 0.0146, Perceptual: 0.0000)
+Validation Loss: 0.0260 (Pixel: 0.0260, Perceptual: 0.0000)
+
+Epoch  28
+Learning rate : 0.0001
+Training Loss: 0.0146 (Pixel: 0.0146, Perceptual: 0.0000)
+Validation Loss: 0.0250 (Pixel: 0.0250, Perceptual: 0.0000)
+
+Epoch  29
+Learning rate : 0.0001
+Training Loss: 0.0145 (Pixel: 0.0145, Perceptual: 0.0000)
+Validation Loss: 0.0264 (Pixel: 0.0264, Perceptual: 0.0000)
+
+Epoch  30
+Learning rate : 0.0001
+Training Loss: 0.0145 (Pixel: 0.0145, Perceptual: 0.0000)
+Validation Loss: 0.0269 (Pixel: 0.0269, Perceptual: 0.0000)
+
+Epoch  31
+Learning rate : 0.0001
+Training Loss: 0.0145 (Pixel: 0.0145, Perceptual: 0.0000)
+Validation Loss: 0.0254 (Pixel: 0.0254, Perceptual: 0.0000)
+
+Epoch  32
+Learning rate : 1e-05
+Training Loss: 0.0146 (Pixel: 0.0146, Perceptual: 0.0000)
+Validation Loss: 0.0272 (Pixel: 0.0272, Perceptual: 0.0000)
+
+Epoch  33
+Learning rate : 1e-05
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0256 (Pixel: 0.0256, Perceptual: 0.0000)
+
+Epoch  34
+Learning rate : 1e-05
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0266 (Pixel: 0.0266, Perceptual: 0.0000)
+
+Epoch  35
+Learning rate : 1e-05
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0253 (Pixel: 0.0253, Perceptual: 0.0000)
+
+Epoch  36
+Learning rate : 1e-05
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0250 (Pixel: 0.0250, Perceptual: 0.0000)
+
+Epoch  37
+Learning rate : 1e-05
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0249 (Pixel: 0.0249, Perceptual: 0.0000)
+
+Epoch  38
+Learning rate : 1e-05
+Training Loss: 0.0145 (Pixel: 0.0145, Perceptual: 0.0000)
+Validation Loss: 0.0287 (Pixel: 0.0287, Perceptual: 0.0000)
+
+Epoch  39
+Learning rate : 1e-05
+Training Loss: 0.0145 (Pixel: 0.0145, Perceptual: 0.0000)
+Validation Loss: 0.0267 (Pixel: 0.0267, Perceptual: 0.0000)
+
+Epoch  40
+Learning rate : 1e-05
+Training Loss: 0.0145 (Pixel: 0.0145, Perceptual: 0.0000)
+Validation Loss: 0.0273 (Pixel: 0.0273, Perceptual: 0.0000)
+
+Epoch  41
+Learning rate : 1e-05
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0251 (Pixel: 0.0251, Perceptual: 0.0000)
+
+Epoch  42
+Learning rate : 1e-05
+Training Loss: 0.0145 (Pixel: 0.0145, Perceptual: 0.0000)
+Validation Loss: 0.0270 (Pixel: 0.0270, Perceptual: 0.0000)
+
+Epoch  43
+Learning rate : 1e-05
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0275 (Pixel: 0.0275, Perceptual: 0.0000)
+
+Epoch  44
+Learning rate : 1e-05
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0275 (Pixel: 0.0275, Perceptual: 0.0000)
+
+Epoch  45
+Learning rate : 1e-05
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0276 (Pixel: 0.0276, Perceptual: 0.0000)
+
+Epoch  46
+Learning rate : 1e-05
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0249 (Pixel: 0.0249, Perceptual: 0.0000)
+
+Epoch  47
+Learning rate : 1e-05
+Training Loss: 0.0145 (Pixel: 0.0145, Perceptual: 0.0000)
+Validation Loss: 0.0286 (Pixel: 0.0286, Perceptual: 0.0000)
+
+Epoch  48
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0145 (Pixel: 0.0145, Perceptual: 0.0000)
+Validation Loss: 0.0291 (Pixel: 0.0291, Perceptual: 0.0000)
+
+Epoch  49
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0255 (Pixel: 0.0255, Perceptual: 0.0000)
+
+Epoch  50
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0250 (Pixel: 0.0250, Perceptual: 0.0000)
+
+Epoch  51
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0277 (Pixel: 0.0277, Perceptual: 0.0000)
+
+Epoch  52
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0270 (Pixel: 0.0270, Perceptual: 0.0000)
+
+Epoch  53
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0270 (Pixel: 0.0270, Perceptual: 0.0000)
+
+Epoch  54
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0272 (Pixel: 0.0272, Perceptual: 0.0000)
+
+Epoch  55
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0255 (Pixel: 0.0255, Perceptual: 0.0000)
+
+Epoch  56
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0147 (Pixel: 0.0147, Perceptual: 0.0000)
+Validation Loss: 0.0312 (Pixel: 0.0312, Perceptual: 0.0000)
+
+Epoch  57
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0276 (Pixel: 0.0276, Perceptual: 0.0000)
+
+Epoch  58
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0252 (Pixel: 0.0252, Perceptual: 0.0000)
+
+Epoch  59
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0267 (Pixel: 0.0267, Perceptual: 0.0000)
+
+Epoch  60
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0250 (Pixel: 0.0250, Perceptual: 0.0000)
+
+Epoch  61
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0279 (Pixel: 0.0279, Perceptual: 0.0000)
+
+Epoch  62
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0251 (Pixel: 0.0251, Perceptual: 0.0000)
+
+Epoch  63
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0254 (Pixel: 0.0254, Perceptual: 0.0000)
+
+Epoch  64
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0260 (Pixel: 0.0260, Perceptual: 0.0000)
+
+Epoch  65
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0257 (Pixel: 0.0257, Perceptual: 0.0000)
+
+Epoch  66
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0265 (Pixel: 0.0265, Perceptual: 0.0000)
+
+Epoch  67
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0257 (Pixel: 0.0257, Perceptual: 0.0000)
+
+Epoch  68
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0249 (Pixel: 0.0249, Perceptual: 0.0000)
+
+Epoch  69
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0257 (Pixel: 0.0257, Perceptual: 0.0000)
+
+Epoch  70
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0260 (Pixel: 0.0260, Perceptual: 0.0000)
+
+Epoch  71
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0253 (Pixel: 0.0253, Perceptual: 0.0000)
+
+Epoch  72
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0272 (Pixel: 0.0272, Perceptual: 0.0000)
+
+Epoch  73
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0287 (Pixel: 0.0287, Perceptual: 0.0000)
+
+Epoch  74
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0253 (Pixel: 0.0253, Perceptual: 0.0000)
+
+Epoch  75
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0276 (Pixel: 0.0276, Perceptual: 0.0000)
+
+Epoch  76
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0257 (Pixel: 0.0257, Perceptual: 0.0000)
+
+Epoch  77
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0284 (Pixel: 0.0284, Perceptual: 0.0000)
+
+Epoch  78
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0271 (Pixel: 0.0271, Perceptual: 0.0000)
+
+Epoch  79
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0251 (Pixel: 0.0251, Perceptual: 0.0000)
+
+Epoch  80
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0273 (Pixel: 0.0273, Perceptual: 0.0000)
+
+Epoch  81
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0145 (Pixel: 0.0145, Perceptual: 0.0000)
+Validation Loss: 0.0275 (Pixel: 0.0275, Perceptual: 0.0000)
+
+Epoch  82
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0146 (Pixel: 0.0146, Perceptual: 0.0000)
+Validation Loss: 0.0274 (Pixel: 0.0274, Perceptual: 0.0000)
+
+Epoch  83
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0281 (Pixel: 0.0281, Perceptual: 0.0000)
+
+Epoch  84
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0293 (Pixel: 0.0293, Perceptual: 0.0000)
+
+Epoch  85
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0254 (Pixel: 0.0254, Perceptual: 0.0000)
+
+Epoch  86
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0279 (Pixel: 0.0279, Perceptual: 0.0000)
+
+Epoch  87
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0146 (Pixel: 0.0146, Perceptual: 0.0000)
+Validation Loss: 0.0284 (Pixel: 0.0284, Perceptual: 0.0000)
+
+Epoch  88
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0256 (Pixel: 0.0256, Perceptual: 0.0000)
+
+Epoch  89
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0257 (Pixel: 0.0257, Perceptual: 0.0000)
+
+Epoch  90
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0283 (Pixel: 0.0283, Perceptual: 0.0000)
+
+Epoch  91
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0276 (Pixel: 0.0276, Perceptual: 0.0000)
+
+Epoch  92
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0278 (Pixel: 0.0278, Perceptual: 0.0000)
+
+Epoch  93
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0275 (Pixel: 0.0275, Perceptual: 0.0000)
+
+Epoch  94
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0146 (Pixel: 0.0146, Perceptual: 0.0000)
+Validation Loss: 0.0271 (Pixel: 0.0271, Perceptual: 0.0000)
+
+Epoch  95
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0273 (Pixel: 0.0273, Perceptual: 0.0000)
+
+Epoch  96
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0280 (Pixel: 0.0280, Perceptual: 0.0000)
+
+Epoch  97
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0267 (Pixel: 0.0267, Perceptual: 0.0000)
+
+Epoch  98
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0145 (Pixel: 0.0145, Perceptual: 0.0000)
+Validation Loss: 0.0295 (Pixel: 0.0295, Perceptual: 0.0000)
+
+Epoch  99
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0293 (Pixel: 0.0293, Perceptual: 0.0000)
+
+Epoch  100
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.0144 (Pixel: 0.0144, Perceptual: 0.0000)
+Validation Loss: 0.0250 (Pixel: 0.0250, Perceptual: 0.0000)
+
+Epoch  101
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.6108 (Pixel: 0.0151, Perceptual: 59.5694)
+Validation Loss: 1.0268 (Pixel: 0.0268, Perceptual: 100.0092)
+
+Epoch  102
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5781 (Pixel: 0.0157, Perceptual: 56.2452)
+Validation Loss: 1.0220 (Pixel: 0.0265, Perceptual: 99.5498)
+
+Epoch  103
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5633 (Pixel: 0.0161, Perceptual: 54.7162)
+Validation Loss: 0.9746 (Pixel: 0.0270, Perceptual: 94.7562)
+
+Epoch  104
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5473 (Pixel: 0.0160, Perceptual: 53.1276)
+Validation Loss: 1.0104 (Pixel: 0.0266, Perceptual: 98.3850)
+
+Epoch  105
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5388 (Pixel: 0.0161, Perceptual: 52.2753)
+Validation Loss: 0.9976 (Pixel: 0.0265, Perceptual: 97.1115)
+
+Epoch  106
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5328 (Pixel: 0.0160, Perceptual: 51.6763)
+Validation Loss: 1.0006 (Pixel: 0.0270, Perceptual: 97.3691)
+
+Epoch  107
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5282 (Pixel: 0.0161, Perceptual: 51.2078)
+Validation Loss: 0.9512 (Pixel: 0.0261, Perceptual: 92.5040)
+
+Epoch  108
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5253 (Pixel: 0.0160, Perceptual: 50.9313)
+Validation Loss: 0.9910 (Pixel: 0.0262, Perceptual: 96.4755)
+
+Epoch  109
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5234 (Pixel: 0.0159, Perceptual: 50.7473)
+Validation Loss: 0.9980 (Pixel: 0.0267, Perceptual: 97.1228)
+
+Epoch  110
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5210 (Pixel: 0.0159, Perceptual: 50.5107)
+Validation Loss: 0.9846 (Pixel: 0.0260, Perceptual: 95.8658)
+
+Epoch  111
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5198 (Pixel: 0.0159, Perceptual: 50.3892)
+Validation Loss: 0.9947 (Pixel: 0.0266, Perceptual: 96.8038)
+
+Epoch  112
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5180 (Pixel: 0.0158, Perceptual: 50.2112)
+Validation Loss: 0.9693 (Pixel: 0.0259, Perceptual: 94.3424)
+
+Epoch  113
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5171 (Pixel: 0.0158, Perceptual: 50.1299)
+Validation Loss: 0.9777 (Pixel: 0.0259, Perceptual: 95.1750)
+
+Epoch  114
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5166 (Pixel: 0.0159, Perceptual: 50.0778)
+Validation Loss: 0.9535 (Pixel: 0.0253, Perceptual: 92.8273)
+
+Epoch  115
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5152 (Pixel: 0.0158, Perceptual: 49.9369)
+Validation Loss: 0.9809 (Pixel: 0.0260, Perceptual: 95.4927)
+
+Epoch  116
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5169 (Pixel: 0.0159, Perceptual: 50.0995)
+Validation Loss: 1.0278 (Pixel: 0.0285, Perceptual: 99.9281)
+
+Epoch  117
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5141 (Pixel: 0.0158, Perceptual: 49.8247)
+Validation Loss: 0.9663 (Pixel: 0.0256, Perceptual: 94.0734)
+
+Epoch  118
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5140 (Pixel: 0.0158, Perceptual: 49.8149)
+Validation Loss: 0.9815 (Pixel: 0.0259, Perceptual: 95.5631)
+
+Epoch  119
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5131 (Pixel: 0.0159, Perceptual: 49.7240)
+Validation Loss: 0.9715 (Pixel: 0.0257, Perceptual: 94.5785)
+
+Epoch  120
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5128 (Pixel: 0.0159, Perceptual: 49.6899)
+Validation Loss: 0.9830 (Pixel: 0.0273, Perceptual: 95.5689)
+
+Epoch  121
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5123 (Pixel: 0.0159, Perceptual: 49.6414)
+Validation Loss: 0.9550 (Pixel: 0.0259, Perceptual: 92.9048)
+
+Epoch  122
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5120 (Pixel: 0.0159, Perceptual: 49.6094)
+Validation Loss: 0.9428 (Pixel: 0.0255, Perceptual: 91.7328)
+
+Epoch  123
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5117 (Pixel: 0.0159, Perceptual: 49.5822)
+Validation Loss: 0.9740 (Pixel: 0.0257, Perceptual: 94.8285)
+
+Epoch  124
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5113 (Pixel: 0.0159, Perceptual: 49.5393)
+Validation Loss: 0.9896 (Pixel: 0.0270, Perceptual: 96.2529)
+
+Epoch  125
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5108 (Pixel: 0.0159, Perceptual: 49.4905)
+Validation Loss: 0.9534 (Pixel: 0.0260, Perceptual: 92.7420)
+
+Epoch  126
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5108 (Pixel: 0.0159, Perceptual: 49.4925)
+Validation Loss: 0.9625 (Pixel: 0.0263, Perceptual: 93.6275)
+
+Epoch  127
+Learning rate : 1.0000000000000002e-06
+Training Loss: 0.5114 (Pixel: 0.0160, Perceptual: 49.5362)
+Validation Loss: 0.9517 (Pixel: 0.0262, Perceptual: 92.5557)
+
+Epoch  128
+Learning rate : 1.0000000000000002e-06
+GPU Epilog Script v0.30
