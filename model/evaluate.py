@@ -33,8 +33,8 @@ class RUNetEvaluation:
 
         with torch.no_grad():
             for data in tqdm(dataloader):
-                image = Variable(data['image']).float().cuda()
-                label = Variable(data['label']).float().cuda()
+                image = Variable(data['lowres']).float().cuda()
+                label = Variable(data['highres']).float().cuda()
                 
                 output = self.model(image)
                 

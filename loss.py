@@ -7,9 +7,20 @@ Created on Wed Jan 20 19:56:57 2021
 """
 
 import torchvision.models as models
+import torch.nn.functional as F
 import torch
 import torch.nn as nn
+from pytorch_msssim     import ssim
+from torchvision.transforms import Normalize
 
+def ssim_loss(pred, target):
+    return 1 - ssim(pred, target, data_range=1, size_average=True) 
+
+def transform_perceptual(img):
+    transform = Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    img = img.repeat(1, 3, 1, 1)
+    img = transform(img)
+    return img
 
 class VGGPerceptualLoss(torch.nn.Module):
     def __init__(self, resize=True,device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")):
@@ -30,6 +41,9 @@ class VGGPerceptualLoss(torch.nn.Module):
         self.resize = resize
 
     def forward(self, input, target):
+        input  = transform_perceptual(input)
+        target = transform_perceptual(target)
+        
         if input.shape[1] != 3:
             input = input.repeat(1, 3, 1, 1).to(self.device)
             target = target.repeat(1, 3, 1, 1).to(self.device)
@@ -50,15 +64,6 @@ class VGGPerceptualLoss(torch.nn.Module):
 def PSNR(Img_pred, Img_true):
     return 10 * torch.log10(torch.max(Img_pred)**2 / nn.MSELoss()(Img_pred,Img_true))
 
-def SSIM(Img_pred, Img_true):
-    L = torch.max(Img_true) - torch.min(Img_true)
-    k1 = 0.01
-    k2 = 0.03
-    c1 = (k1*L)**2
-    c2 = (k2*L)**2
-    mu1 = torch.mean(Img_pred)
-    mu2 = torch.mean(Img_true)
-    sig1 = torch.var(Img_pred)
-    sig2 = torch.var(Img_true)
-    sig12 = torch.mean((Img_pred - mu1) * (Img_true - mu2))
-    return (2*mu1*mu2 + c1)*(2*sig12 + c2)/(mu1**2 + mu2**2 + c1) / (sig1 + sig2 + c2)
+def cosine_contrastive_loss(x, y):
+    # Cosine contrastive loss. Assumes x and y are normalized or raw embeddings
+    return 1 - F.cosine_similarity(x, y, dim=1).mean()
