@@ -8,9 +8,10 @@ from tqdm           import tqdm
 from piq            import ssim
 
 CHECKPOINTS_FOLDER = '/cluster/project7/ProsRegNet_CellCount/UNet_SR/checkpoints/'
+
 def get_checkpoint_name():
     now = datetime.now()
-    checkpoint_file = CHECKPOINTS_FOLDER + f'checkpoints_{now.strftime("%d%m")}_{now.strftime("%H%M")}'
+    checkpoint_file = f'{now.strftime("%d%m")}_{now.strftime("%H%M")}'
     return checkpoint_file
 
 def get_lr(optimizer):
@@ -113,10 +114,10 @@ def train_evaluate(model, train_dataloader, test_dataloader, optimizer, schedule
         
         if val_total < best_loss:
             best_loss = val_total
-            torch.save(model.state_dict(), name + '_best.pth')
-            print('Best model saved at', name + '_best.pth')
+            torch.save(model.state_dict(), CHECKPOINTS_FOLDER + name + '_best.pth')
+            print('Best model saved at', CHECKPOINTS_FOLDER + name + '_best.pth')
 
-        torch.save(model.state_dict(), name + '_current.pth')
+        torch.save(model.state_dict(), CHECKPOINTS_FOLDER + name + '_current.pth')
         scheduler.step(val_total)
         
     return model

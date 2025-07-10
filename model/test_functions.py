@@ -10,12 +10,12 @@ def compute_metrics(pred, gt):
     pred_np = pred.squeeze().cpu().numpy()
     gt_np   = gt.squeeze().cpu().numpy()
     
-    mse  = mse_metric (gt_np, pred_np, data_range=1.0)
+    mse  = mse_metric (gt_np, pred_np)
     psnr = psnr_metric(gt_np, pred_np, data_range=1.0)
     ssim = ssim_metric(gt_np, pred_np, data_range=1.0)
     return mse, psnr, ssim
 
-def evaluate_results(diffusion, dataloader, device, batch_size):
+def evaluate_results(model, dataloader, device, batch_size):
     mse_list, psnr_list, ssim_list = [], [], []
     for batch in dataloader:
         lowres    = batch['lowres'].to(device)
@@ -30,14 +30,14 @@ def evaluate_results(diffusion, dataloader, device, batch_size):
             psnr_list.append(psnr)
             ssim_list.append(ssim)
 
-    print(f'Average MSE:  {np.mean(mse_list):.4f}')
+    print(f'Average MSE:  {np.mean(mse_list):.6f}')
     print(f'Average PSNR: {np.mean(psnr_list):.2f}')
     print(f'Average SSIM: {np.mean(ssim_list):.4f}')
 
 def format_image(img):
     return np.squeeze((img).cpu().numpy())
 
-def visualize_results(model, dataset, device, name, batch_size=5, seed=1):
+def visualize_results(model, dataset, device, name, t2w=False, batch_size=5, seed=1):
     ncols = 4 if t2w else 3
     fig, axes = plt.subplots(nrows=batch_size, ncols=ncols, figsize=(3*ncols,3*batch_size))
     axes[0,0].set_title('Low res (Input)')
@@ -54,27 +54,27 @@ def visualize_results(model, dataset, device, name, batch_size=5, seed=1):
         for i, ind in enumerate(indices):
             sample = dataset[ind]
             lowres    = sample['lowres'].unsqueeze(0).float().to(device)
-            label  = sample['highres'].unsqueeze(0).float().to(device)
+            highres   = sample['highres'].unsqueeze(0).float().to(device)
             if t2w:
-                t2w = sample['T2W'].to(device)
+                t2w_image = sample['T2W'].to(device)
                 
             # Use model to get prediction
             pred,_ = model(lowres)
 
-            im0 = axes[i, 0].imshow(format_image(lowres[i]),  cmap='gray', vmin=0, vmax=1)
+            im0 = axes[i, 0].imshow(format_image(lowres),  cmap='gray', vmin=0, vmax=1)
             axes[i, 0].axis('off')
             fig.colorbar(im0, ax=axes[i, 0])
 
-            im1 = axes[i, 1].imshow(format_image(pred[i]),    cmap='gray', vmin=0, vmax=1)
+            im1 = axes[i, 1].imshow(format_image(pred),    cmap='gray', vmin=0, vmax=1)
             axes[i, 1].axis('off')
             fig.colorbar(im1, ax=axes[i, 1])
             
-            im2 = axes[i, 2].imshow(format_image(highres[i]), cmap='gray', vmin=0, vmax=1)
+            im2 = axes[i, 2].imshow(format_image(highres), cmap='gray', vmin=0, vmax=1)
             axes[i, 2].axis('off')
             fig.colorbar(im2, ax=axes[i, 2])
             
             if t2w:
-                im3 = axes[i, 3].imshow(format_image(t2w[i]), cmap='gray', vmin=0, vmax=1)
+                im3 = axes[i, 3].imshow(format_image(t2w_image), cmap='gray', vmin=0, vmax=1)
                 axes[i, 3].axis('off')
                 fig.colorbar(im3, ax=axes[i, 3])
             

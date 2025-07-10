@@ -115,17 +115,13 @@ class RUNet(nn.Module):
             nn.BatchNorm2d(512),
             nn.ReLU()
         )
-        
-        self.representation_transform = nn.Sequential(
-            nn.Conv2d(512, 768, kernel_size=4),  # Input: (512, 4, 4) → Output: (768, 1, 1)
-            nn.ReLU()
-        )
-        
-        self.embedding_to_featuremap = nn.Sequential(
-            nn.ConvTranspose2d(768, 512, kernel_size=4),  # Upsample (768, 1, 1) → (512, 4, 4)
-            nn.ReLU()
-        )
 
+        self.representation_transform = nn.Sequential(
+            nn.Conv2d(512, 1024, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(1024, 512, kernel_size=3, padding=1),
+            nn.ReLU(),
+        )
 
         self.refine4 = RefineBlock(1024, 512)
         self.refine3 = RefineBlock(512 + 512//4, 384)
@@ -138,29 +134,55 @@ class RUNet(nn.Module):
 
     def forward(self, x):
         x1 = self.block1(x)
+        x2 = self.block2(self.max_pool(x1))
+        x3 = self.block3(self.max_pool(x2))
+        x4 = self.block4(self.max_pool(x3))
+        x5 = self.block5(self.max_pool(x4))
 
-        x2 = self.block2(self.max_pool(x1)) 
+        embedding = self.representation_transform(x5)
+
+        input5 = torch.cat([x5, embedding], dim=1)
+        output4 = self.refine4(input5)
+
+        input4 = torch.cat([x4, output4], dim=1)
+        output3 = self.refine3(input4)
+
+        input3 = torch.cat([x3, output3], dim=1)
+        output2 = self.refine2(input3)
+
+        input2 = torch.cat([x2, output2], dim=1)
+        output1 = self.refine1(input2)
+
+        input1 = torch.cat([x1, output1], dim=1)
+        output = self.final(input1)
+
+        return output, x5
+    
+    
+class RUNetv2(RUNet):
+    def __init__(self, drop_first, drop_last):
+        super().__init__(drop_first, drop_last)
+                
+        self.representation_transform = nn.Sequential(
+            nn.Conv2d(512, 768, kernel_size=4),  # Input: (512, 4, 4) → Output: (768, 1, 1)
+            nn.ReLU()
+        )
         
+        self.embedding_to_featuremap = nn.Sequential(
+            nn.ConvTranspose2d(768, 512, kernel_size=4),  # Upsample (768, 1, 1) → (512, 4, 4)
+            nn.ReLU()
+        )
+
+    def forward(self, x):
+        x1 = self.block1(x)
+        x2 = self.block2(self.max_pool(x1)) 
         x3 = self.block3(self.max_pool(x2)) 
-
         x4 = self.block4(self.max_pool(x3))  
-
         x5 = self.block5(self.max_pool(x4))
 
         embedding_map = self.representation_transform(x5)    
         embedding     = embedding_map.view(x.size(0), -1)     
-        
-        ########################
-        # x  = [1, 1, 64, 64]
-        # x1 = [1, 64, 64, 64]
-        # x2 = [1, 128, 32, 32]
-        # x3 = [1, 256, 16, 16]
-        # x4 = [1, 512, 8, 8]
-        # x5 = [1, 512, 4, 4]
-        # embedding_map = [1, 768, 1, 1]
-        # embedding     = [1, 768]
-        ########################
-        
+
         x5_reconstructed = self.embedding_to_featuremap(embedding_map)
         
         input5 = torch.cat([x5, x5_reconstructed], dim=1)
@@ -179,3 +201,15 @@ class RUNet(nn.Module):
         output = self.final(input1)
 
         return output, x5
+
+        ########################
+        # x  = [1, 1, 64, 64]
+        # x1 = [1, 64, 64, 64]
+        # x2 = [1, 128, 32, 32]
+        # x3 = [1, 256, 16, 16]
+        # x4 = [1, 512, 8, 8]
+        # x5 = [1, 512, 4, 4]
+        # embedding_map = [1, 768, 1, 1]
+        # embedding     = [1, 768]
+        ########################
+        

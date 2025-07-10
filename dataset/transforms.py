@@ -41,7 +41,7 @@ class CenterCrop(object):
     image = image[top: top + new_h, left: left + new_w]
     label = label[top: top + new_h, left: left + new_w]
 
-    sample['lowres'] = image
+    sample['lowres']  = image
     sample['highres'] = label
     return sample
 

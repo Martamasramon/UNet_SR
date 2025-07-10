@@ -20,7 +20,10 @@ source CriDiff_env/bin/activate
 export PATH="CriDiff_env/bin:$PATH"
 cd ../UNet_SR
 
-python3 test.py --checkpoint 'checkpoints_2805_1621_stage_1_best'
-python3 test.py --checkpoint 'checkpoints_2805_1621_stage_1_best' --finetune --img_folder '/cluster/project7/backup_masramon/IQT/HistoMRI_surgical/ADC/'
+python3 test.py --checkpoint '0807_0940_stage_1' 
+python3 test.py --checkpoint '0807_0940_stage_2' 
+python3 test.py --checkpoint '0907_1015_stage_1' 
+python3 test.py --checkpoint '0907_1015_stage_2' 
+python3 test.py --checkpoint 'pretrain_PICAI' 
 
 date

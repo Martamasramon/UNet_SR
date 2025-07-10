@@ -8,7 +8,7 @@ from dataset.dataset import MyDataset
 from loss            import VGGPerceptualLoss, ssim_loss
 from loss            import cosine_contrastive_loss as contrastive_loss
 
-from model.training_functions import train_evaluate, get_checkpoint_name
+from model.train_functions    import train_evaluate, get_checkpoint_name, CHECKPOINTS_FOLDER
 from model.runet              import RUNet
 
 folder = '/cluster/project7/backup_masramon/IQT/'
@@ -32,16 +32,16 @@ parser.add_argument('--factor',     type=float, default=0.5)
 parser.add_argument('--patience',   type=int,   default=4)
 parser.add_argument('--cooldown',   type=int,   default=2)
 
-parser.add_argument('--λ_pixel',    type=float,  default=10.0)
-parser.add_argument('--λ_perct',    type=float,  default=0.01)
-parser.add_argument('--λ_ssim',     type=float,  default=1.0)
-parser.add_argument('--λ_contrast', type=float,  default=1.0)
+parser.add_argument('--λ_pixel',    type=float, default=10.0)
+parser.add_argument('--λ_perct',    type=float, default=0.01)
+parser.add_argument('--λ_ssim',     type=float, default=1.0)
+parser.add_argument('--λ_contrast', type=float, default=1.0)
 
-parser.add_argument('--load_checkpoint',type=str,  default=None)
-parser.add_argument('--img_folder',     type=str,  default='PICAI')
-parser.add_argument('--is_pretrain',    action='store_true')
-parser.set_defaults(is_pretrain=True)
-parser.add_argument('--finetune',       dest='is_pretrain', action='store_false')
+parser.add_argument('--checkpoint', type=str,   default='pretrain_PICAI')
+parser.add_argument('--save_as',    type=str,   default=None)
+
+parser.add_argument('--finetune',     action='store_true')
+parser.set_defaults(finetune=False)
 parser.add_argument('--surgical_only',  action='store_true')
 parser.set_defaults(surgical_only=False)
 args, unparsed = parser.parse_known_args()
@@ -58,34 +58,35 @@ model = model.cuda()
 
 # Create dataset & dataloader
 print('Creating datasets...')
+data_folder = 'HistoMRI' if args.finetune else 'PICAI'
+
 train_dataset = MyDataset(
-    folder + args.img_folder, 
+    folder + data_folder, 
+    data_type       = 'train', 
     img_size        = args.img_size, 
-    is_pretrain     = args.is_pretrain, 
+    is_finetune     = args.finetune, 
     surgical_only   = args.surgical_only, 
-    is_train        = True,
     use_histo       = args.use_histo, 
     use_t2w         = args.use_T2W, 
 )
 test_dataset = MyDataset(
-    folder + args.img_folder, 
+    folder + data_folder, 
+    data_type       = 'test', 
     img_size        = args.img_size, 
-    is_pretrain     = args.is_pretrain, 
-    surgical_only   = args.surgical_only, 
-    is_train        = False,
+    is_finetune     = args.finetune, 
+    surgical_only   = args.surgical_only,
     use_histo       = args.use_histo, 
     use_t2w         = args.use_T2W, 
 )
 train_dataloader = DataLoader(train_dataset, batch_size=args.train_bs, shuffle=True)#,  num_workers=8)
 test_dataloader  = DataLoader(test_dataset,  batch_size=args.test_bs,  shuffle=False)#, num_workers=0)
 
-if args.load_checkpoint is None:
-    checkpoint = get_checkpoint_name() + '_contrastive'
+if args.checkpoint is None:
+    checkpoint = args.save_as if args.save_as is not None else get_checkpoint_name()+'_contrastive'
 else:
-    checkpoint = './checkpoints/' + args.load_checkpoint
     print('Loading model weights...')
-    model.load_state_dict(torch.load(checkpoint + '_best.pth'), strict=False)
-    checkpoint = './checkpoints/' + args.load_checkpoint + '_contrastive'
+    model.load_state_dict(torch.load(f'{CHECKPOINTS_FOLDER}{args.checkpoint}.pth'), strict=False)
+    checkpoint = args.save_as if args.save_as is not None else args.checkpoint + '_contrastive'
     
 print('Starting training...')
 losses = {'Pixel': L1Loss(),     'Perceptual': VGGPerceptualLoss(), 'SSIM': ssim_loss,   'Contrastive': contrastive_loss}

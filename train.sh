@@ -20,6 +20,6 @@ source CriDiff_env/bin/activate
 export PATH="CriDiff_env/bin:$PATH"
 cd ../UNet_SR
 
-python3 train.py --lr 0.0000001 λ_pixel 10.0 λ_perct 0.0025 λ_ssim 1.0 lr_factor 1.0
+python3 train.py --lr=0.0000001 --lr_factor=1
 
 date
