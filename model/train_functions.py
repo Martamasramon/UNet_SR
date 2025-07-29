@@ -1,11 +1,6 @@
-import os
 import numpy as np
 import torch
-from torch.autograd import Variable
-from torchvision    import utils
 from datetime       import datetime
-from tqdm           import tqdm
-from piq            import ssim
 
 CHECKPOINTS_FOLDER = '/cluster/project7/ProsRegNet_CellCount/UNet_SR/checkpoints/'
 

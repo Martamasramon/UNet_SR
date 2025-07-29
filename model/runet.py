@@ -72,7 +72,13 @@ class FinalBlock(nn.Module):
         return self.layers(x)
 
 
+################################################################################################
 class RUNet(nn.Module):
+    """
+    Basic RUNet 
+    - 5 blocks
+    - embedding.shape = (1024)
+    """
     def __init__(self, drop_first, drop_last):
         super(RUNet, self).__init__()        
         drop_2 = drop_first
@@ -156,12 +162,16 @@ class RUNet(nn.Module):
         input1 = torch.cat([x1, output1], dim=1)
         output = self.final(input1)
 
-        return output, x5
+        return output, x4
+  
     
-    
-class RUNetv2(RUNet):
-    def __init__(self, drop_first, drop_last):
-        super().__init__(drop_first, drop_last)
+################################################################################################
+class RUNet_768(RUNet):
+    """
+    Same as RUNet but embedding.shape = (768)
+    """
+    def __init__(self, *args):
+        super().__init__(*args)   
                 
         self.representation_transform = nn.Sequential(
             nn.Conv2d(512, 768, kernel_size=4),  # Input: (512, 4, 4) → Output: (768, 1, 1)
@@ -213,3 +223,44 @@ class RUNetv2(RUNet):
         # embedding     = [1, 768]
         ########################
         
+
+################################################################################################        
+class RUNet_fusion(RUNet):
+    """
+    Same as RUNet but with fusion of T2W input
+    - Concatenation + 1D convolution
+    """
+    def __init__(self, *args):
+        super().__init__(*args)   
+        
+        self.fuse    = nn.Conv1d(2048, 1024, kernel_size=1)
+
+    def forward(self, x, y):
+        x1 = self.block1(x)
+        x2 = self.block2(self.max_pool(x1))
+        x3 = self.block3(self.max_pool(x2))
+        x4 = self.block4(self.max_pool(x3))
+        x5 = self.block5(self.max_pool(x4))
+
+        embedding = self.representation_transform(x5)
+        
+        print(embedding.shape, y.shape)
+
+        fused = self.fuse(torch.cat([embedding, y], dim=1))
+
+        input5 = torch.cat([x5, fused], dim=1)
+        output4 = self.refine4(input5)
+
+        input4 = torch.cat([x4, output4], dim=1)
+        output3 = self.refine3(input4)
+
+        input3 = torch.cat([x3, output3], dim=1)
+        output2 = self.refine2(input3)
+
+        input2 = torch.cat([x2, output2], dim=1)
+        output1 = self.refine1(input2)
+
+        input1 = torch.cat([x1, output1], dim=1)
+        output = self.final(input1)
+
+        return output, x5
