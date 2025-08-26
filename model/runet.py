@@ -233,25 +233,24 @@ class RUNet_fusion(RUNet):
     def __init__(self, *args):
         super().__init__(*args)   
         
-        self.fuse    = nn.Conv1d(2048, 1024, kernel_size=1)
+        self.fuse    = nn.Conv2d(1024, 512, kernel_size=3, padding=1) 
 
     def forward(self, x, y):
         x1 = self.block1(x)
         x2 = self.block2(self.max_pool(x1))
         x3 = self.block3(self.max_pool(x2))
         x4 = self.block4(self.max_pool(x3))
-        x5 = self.block5(self.max_pool(x4))
+        
+        fused = self.fuse(torch.cat([x4, y], dim=1))
+    
+        x5 = self.block5(self.max_pool(fused))
 
         embedding = self.representation_transform(x5)
         
-        print(embedding.shape, y.shape)
-
-        fused = self.fuse(torch.cat([embedding, y], dim=1))
-
-        input5 = torch.cat([x5, fused], dim=1)
+        input5 = torch.cat([x5, embedding], dim=1)
         output4 = self.refine4(input5)
 
-        input4 = torch.cat([x4, output4], dim=1)
+        input4 = torch.cat([fused, output4], dim=1)
         output3 = self.refine3(input4)
 
         input3 = torch.cat([x3, output3], dim=1)
@@ -263,4 +262,4 @@ class RUNet_fusion(RUNet):
         input1 = torch.cat([x1, output1], dim=1)
         output = self.final(input1)
 
-        return output, x5
+        return output, x4

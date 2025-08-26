@@ -20,10 +20,9 @@ source CriDiff_env/bin/activate
 export PATH="CriDiff_env/bin:$PATH"
 cd ../UNet_SR
 
-python3 test.py --checkpoint '0807_0940_stage_1' 
-python3 test.py --checkpoint '0807_0940_stage_2' 
-python3 test.py --checkpoint '0907_1015_stage_1' 
-python3 test.py --checkpoint '0907_1015_stage_2' 
+
 python3 test.py --checkpoint 'pretrain_PICAI' 
+
+python3 test.py --checkpoint 'pretrain_PICAI_cont_fusion_1_best' --use_T2W --fusion 
 
 date

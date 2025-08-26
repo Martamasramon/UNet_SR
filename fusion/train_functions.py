@@ -81,10 +81,10 @@ def train(model_adc, model_t2w, optim_adc, optim_t2w, dataloader, losses, λ_los
     
     return total_loss_adc, total_losses_adc, total_loss_t2w, total_losses_t2w, total_contrast
 
-def train_adc(model_adc, model_t2w, optim_adc, dataloader, losses, λ_loss):
+
+def train_adc(model_adc, model_t2w, optim, dataloader, losses, λ_loss):
     model_adc.train()
-    total_loss_adc, total_losses_adc = create_loss(losses)
-    total_contrast = 0
+    total_loss, total_losses = create_loss(losses)
     
     for data in dataloader:
         # Get images
@@ -94,23 +94,22 @@ def train_adc(model_adc, model_t2w, optim_adc, dataloader, losses, λ_loss):
         adc_pred, embed_adc = model_adc(adc_lowres, embed_t2w)
                 
         # Calculate loss
-        loss_adc, this_loss_adc = compute_loss(adc_pred, adc_highres, losses, λ_loss)              
-        contrast   = losses['Contrastive'](embed_adc, embed_t2w)
-        total_loss = loss_adc + λ_loss['Contrastive'] * contrast
+        loss, this_loss = compute_loss(adc_pred, adc_highres, losses, λ_loss)      
+                
+        this_loss['Contrastive'] = losses['Contrastive'](embed_adc, embed_t2w)
+        loss  += λ_loss['Contrastive'] * this_loss['Contrastive']  
         
         # Update optimizers
-        optim_adc.zero_grad()
-        total_loss.backward()   
-        optim_adc.step()
+        optim.zero_grad()
+        loss.backward()   
+        optim.step()
         
         # Store losses
-        total_loss_adc, total_losses_adc = update_loss(total_loss_adc, loss_adc, total_losses_adc, this_loss_adc)
-        total_contrast += contrast.item() 
+        total_loss, total_losses = update_loss(total_loss, loss, total_losses, this_loss)
 
-    total_loss_adc, total_losses_adc = average_loss(total_loss_adc, total_losses_adc, len(dataloader))
-    total_contrast /= len(dataloader)
+    total_loss, total_losses = average_loss(total_loss, total_losses, len(dataloader))
     
-    return total_loss_adc, total_losses_adc, total_contrast
+    return total_loss, total_losses
 
 
 def evaluate(model_adc, model_t2w, dataloader, losses, λ_loss):
@@ -148,8 +147,7 @@ def evaluate(model_adc, model_t2w, dataloader, losses, λ_loss):
 
 def evaluate_adc(model_adc, model_t2w, dataloader, losses, λ_loss):
     model_adc.eval()
-    total_loss_adc, total_losses_adc = create_loss(losses)
-    total_contrast = 0
+    total_loss, total_losses= create_loss(losses)
     
     with torch.no_grad():
         for data in dataloader:
@@ -160,18 +158,17 @@ def evaluate_adc(model_adc, model_t2w, dataloader, losses, λ_loss):
             adc_pred, embed_adc = model_adc(adc_lowres, embed_t2w)
             
             # Calculate loss
-            loss_adc, this_loss_adc = compute_loss(adc_pred, adc_highres, losses, λ_loss)                  
-            contrast   = losses['Contrastive'](embed_adc, embed_t2w)
-            total_loss = loss_adc + loss_t2w + λ_loss['Contrastive'] * contrast     
+            loss, this_loss = compute_loss(adc_pred, adc_highres, losses, λ_loss)                  
+            
+            this_loss['Contrastive'] = losses['Contrastive'](embed_adc, embed_t2w)
+            loss  += λ_loss['Contrastive'] * this_loss['Contrastive']     
 
             # Store losses
-            total_loss_adc, total_losses_adc = update_loss(total_loss_adc, loss_adc, total_losses_adc, this_loss_adc)
-            total_contrast += contrast.item() 
+            total_loss, total_losses = update_loss(total_loss, loss, total_losses, this_loss)
             
-    total_loss_adc, total_losses_adc = average_loss(total_loss_adc, total_losses_adc, len(dataloader))
-    total_contrast /= len(dataloader)
+    total_loss, total_losses = average_loss(total_loss, total_losses, len(dataloader))
     
-    return total_loss_adc, total_losses_adc, total_contrast
+    return total_loss, total_losses
 
 
 def print_output(total, all_loss, name):
@@ -228,15 +225,13 @@ def train_evaluate_adc(model_adc, model_t2w, train_dl, test_dl, optim_adc, sched
         print('Learning rate ADC:', get_lr(optim_adc))
         
         ###### Training ######
-        train_total_adc, train_all_adc, train_contrast = train_adc(model_adc, model_t2w, optim_adc, train_dl, losses, λ_loss)
-        print_output(train_total_adc, train_all_adc, 'ADC Super-Resolution Training')
-        print_output(train_contrast, None, 'Contrastive Training')
+        train_total_adc, train_all_adc = train_adc(model_adc, model_t2w, optim_adc, train_dl, losses, λ_loss)
+        print_output(train_total_adc, train_all_adc, 'Training')
 
         ###### Evaluation ######
-        val_total_adc, val_all_adc, val_contrast = evaluate_adc(model_adc, model_t2w, test_dl, losses, λ_loss)
-        print_output(val_total_adc, val_all_adc, 'ADC Super-Resolution Validation')
-        print_output(val_contrast, None, 'Contrastive Training')
+        val_total_adc, val_all_adc = evaluate_adc(model_adc, model_t2w, test_dl, losses, λ_loss)
+        print_output(val_total_adc, val_all_adc, 'Validation')
         
-        best_loss_adc = update_model(val_total_adc+val_contrast, best_loss_adc, model_adc, CHECKPOINTS_ADC + name_adc)
+        best_loss_adc = update_model(val_total_adc, best_loss_adc, model_adc, CHECKPOINTS_ADC + name_adc)
 
-        sched_adc.step(val_total_adc+val_contrast)
+        sched_adc.step(val_total_adc)

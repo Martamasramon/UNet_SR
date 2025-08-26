@@ -23,8 +23,6 @@ parser.add_argument('--drop_last',      type=float,default=0.5)
 
 parser.add_argument('--use_T2W',    action='store_true')
 parser.set_defaults(use_T2W=False)
-parser.add_argument('--use_histo',  action='store_true')
-parser.set_defaults(use_histo=False)
 
 parser.add_argument('--n_epochs',   type=int,   default=50)
 parser.add_argument('--lr',         type=float, default=1e-6)
@@ -66,8 +64,7 @@ train_dataset = MyDataset(
     img_size        = args.img_size, 
     is_finetune     = args.finetune, 
     surgical_only   = args.surgical_only, 
-    use_histo       = args.use_histo, 
-    use_t2w         = args.use_T2W, 
+    use_T2W         = args.use_T2W, 
 )
 test_dataset = MyDataset(
     folder + data_folder, 
@@ -75,8 +72,7 @@ test_dataset = MyDataset(
     img_size        = args.img_size, 
     is_finetune     = args.finetune, 
     surgical_only   = args.surgical_only,
-    use_histo       = args.use_histo, 
-    use_t2w         = args.use_T2W, 
+    use_T2W         = args.use_T2W, 
 )
 train_dataloader = DataLoader(train_dataset, batch_size=args.train_bs, shuffle=True)#,  num_workers=8)
 test_dataloader  = DataLoader(test_dataset,  batch_size=args.test_bs,  shuffle=False)#, num_workers=0)

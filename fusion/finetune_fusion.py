@@ -35,8 +35,8 @@ parser.set_defaults(use_histo=False)
 
 parser.add_argument('--n_epochs_1', type=int,   default=50)
 parser.add_argument('--n_epochs_2', type=int,   default=50)
-parser.add_argument('--lr_1',       type=float, default=1e-4)
-parser.add_argument('--lr_2',       type=float, default=1e-6)
+parser.add_argument('--lr_1',       type=float, default=1e-7)
+parser.add_argument('--lr_2',       type=float, default=1e-7)
 parser.add_argument('--factor',     type=float, default=0.5)
 parser.add_argument('--patience',   type=int,   default=4)
 parser.add_argument('--cooldown',   type=int,   default=2)
@@ -101,14 +101,14 @@ def main():
         data_type       = 'train', 
         img_size        = args.img_size, 
         is_finetune     = args.finetune, 
-        use_t2w         = True, 
+        use_T2W         = True, 
     )
     test_dataset = MyDataset(
         folder + data_folder, 
         data_type       = 'test', 
         img_size        = args.img_size, 
         is_finetune     = args.finetune, 
-        use_t2w         = True, 
+        use_T2W         = True, 
     )
     train_dl = DataLoader(train_dataset, batch_size=args.train_bs, shuffle=True,  num_workers=8)
     test_dl  = DataLoader(test_dataset,  batch_size=args.test_bs,  shuffle=False, num_workers=0)

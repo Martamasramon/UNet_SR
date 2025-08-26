@@ -7,7 +7,7 @@
 #$ -V
 
 #$ -wd /cluster/project7/ProsRegNet_CellCount/UNet_SR
-#$ -N Finetune
+#$ -N Train_UNet
 
 date
 nvidia-smi
@@ -18,8 +18,8 @@ export LD_LIBRARY_PATH=/share/apps/python-3.9.5-shared/lib:$LD_LIBRARY_PATH
 cd ../CriDiff
 source CriDiff_env/bin/activate
 export PATH="CriDiff_env/bin:$PATH"
-cd ../UNet_SR
+cd ../UNet_SR/fusion
 
-python3 finetune_contrastive.py --use_T2W
+python3 finetune_fusion.py 
 
 date

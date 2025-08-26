@@ -15,14 +15,19 @@ def compute_metrics(pred, gt):
     ssim = ssim_metric(gt_np, pred_np, data_range=1.0)
     return mse, psnr, ssim
 
-def evaluate_results(model, dataloader, device, batch_size):
+def evaluate_results(model, dataloader, device, batch_size, use_T2W=False):
     mse_list, psnr_list, ssim_list = [], [], []
+    
     for batch in dataloader:
         lowres    = batch['lowres'].to(device)
         highres   = batch['highres'].to(device)
+        ###  FIX THIS
         
         with torch.no_grad():
-            pred,_ = model(lowres)
+            if use_T2W:
+                pred,_   = model(lowres, torch.squeeze(batch['T2W embed'].to(device)))
+            else:
+                pred,_   = model(lowres)
         
         for j in range(pred.size(0)):
             mse, psnr, ssim = compute_metrics(pred[j], highres[j])
@@ -37,14 +42,24 @@ def evaluate_results(model, dataloader, device, batch_size):
 def format_image(img):
     return np.squeeze((img).cpu().numpy())
 
-def visualize_results(model, dataset, device, name, t2w=False, batch_size=5, seed=1):
-    ncols = 4 if t2w else 3
+def plot_image(image, fig, axes, i, j):
+    # Format image
+    image  = format_image(image)
+            
+    # Low-res
+    img_plot = axes[i, j].imshow(image,  cmap='gray', vmin=0, vmax=1)
+    axes[i, j].axis('off')
+    fig.colorbar(img_plot, ax=axes[i, j])
+    
+def visualize_results(model, dataset, device, name, use_T2W=False, batch_size=5, seed=1):
+    ncols = 5 if use_T2W else 4
     fig, axes = plt.subplots(nrows=batch_size, ncols=ncols, figsize=(3*ncols,3*batch_size))
     axes[0,0].set_title('Low res (Input)')
     axes[0,1].set_title('Super resolution (Output)')
-    axes[0,2].set_title('High res (Ground truth)')
-    if t2w:
-        axes[0,3].set_title('High res T2W')
+    axes[0,2].set_title('Error')
+    axes[0,3].set_title('High res (Ground truth)')
+    if use_T2W:
+        axes[0,4].set_title('High res T2W')
         
     np.random.seed(seed)
     indices = np.random.choice(np.arange(len(dataset)),batch_size,replace=False)
@@ -55,28 +70,34 @@ def visualize_results(model, dataset, device, name, t2w=False, batch_size=5, see
             sample = dataset[ind]
             lowres    = sample['lowres'].unsqueeze(0).float().to(device)
             highres   = sample['highres'].unsqueeze(0).float().to(device)
-            if t2w:
-                t2w_image = sample['T2W'].to(device)
-                
+            
             # Use model to get prediction
-            pred,_ = model(lowres)
-
-            im0 = axes[i, 0].imshow(format_image(lowres),  cmap='gray', vmin=0, vmax=1)
-            axes[i, 0].axis('off')
-            fig.colorbar(im0, ax=axes[i, 0])
-
-            im1 = axes[i, 1].imshow(format_image(pred),    cmap='gray', vmin=0, vmax=1)
-            axes[i, 1].axis('off')
-            fig.colorbar(im1, ax=axes[i, 1])
+            if use_T2W:
+                t2w_image, t2w_embed = sample['T2W'].to(device), sample['T2W embed'].to(device)
+                pred,_ = model(lowres, t2w_embed)
+            else:
+                pred,_ = model(lowres)
             
-            im2 = axes[i, 2].imshow(format_image(highres), cmap='gray', vmin=0, vmax=1)
+            # Plot images
+            plot_image(lowres,  fig, axes, i, 0)
+            plot_image(pred,    fig, axes, i, 1)
+            plot_image(highres, fig, axes, i, 3)
+            if use_T2W:
+                plot_image(t2w_image, fig, axes, i, 4)
+
+            # Error
+            im_base = axes[i, 2].imshow(format_image(pred), cmap='gray', vmin=0, vmax=1)
             axes[i, 2].axis('off')
-            fig.colorbar(im2, ax=axes[i, 2])
             
-            if t2w:
-                im3 = axes[i, 3].imshow(format_image(t2w_image), cmap='gray', vmin=0, vmax=1)
-                axes[i, 3].axis('off')
-                fig.colorbar(im3, ax=axes[i, 3])
+            err = np.abs(format_image(pred) - format_image(highres))
+            p99 = np.percentile(err, 99)
+            den = p99 if p99 > 1e-8 else (err.max() + 1e-8)
+            err_norm = np.clip(err / den, 0, 1)
+
+            im_overlay = axes[i, 2].imshow(err_norm, cmap='RdYlGn_r', vmin=0, vmax=1, alpha=0.6)
+            cbar = fig.colorbar(im_overlay, ax=axes[i, 2])
+            cbar.set_label('Predicted (with error)')
+            
             
         fig.tight_layout(pad=0.25)
         plt.savefig(f'./results/image_{name}.jpg')

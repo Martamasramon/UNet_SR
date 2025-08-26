@@ -110,7 +110,8 @@ def get_test_transform(img_size=64, scale_factor=2, same_size_input_label=True):
 
 def get_t2w_transform(img_size=64):
   return T.Compose([
-      T.CenterCrop(img_size),
+      T.CenterCrop(img_size*2),
+      T.Resize(img_size, interpolation=T.InterpolationMode.NEAREST),
       T.ToTensor()
   ]) 
   
