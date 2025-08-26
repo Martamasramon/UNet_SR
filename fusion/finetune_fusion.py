@@ -1,10 +1,8 @@
-import torch.optim as optim
 import torch
 from torch.nn                   import L1Loss
 from torch.utils.data           import DataLoader
-from torch.optim.lr_scheduler   import ReduceLROnPlateau
 
-from train_functions    import train_evaluate_adc, CHECKPOINTS_ADC, CHECKPOINTS_T2W
+from train_functions    import train_evaluate_adc, get_scheduler, CHECKPOINTS_ADC, CHECKPOINTS_T2W
 
 import sys
 import os
@@ -21,17 +19,6 @@ from runetv2 import RUNet as T2Wnet
 
 folder = '/cluster/project7/backup_masramon/IQT/'
 
-def get_scheduler(model, args, lr):
-    optimizer = optim.Adam(model.parameters(), lr = lr)
-    scheduler = ReduceLROnPlateau(
-        optimizer, 
-        'min', 
-        factor   = args.factor, 
-        patience = args.patience, 
-        cooldown = args.cooldown, 
-        min_lr   = 1e-8
-    )
-    return optimizer, scheduler
 
 def freeze_encoder(model):
     for name, param in model.named_parameters():

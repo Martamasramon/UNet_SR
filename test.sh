@@ -21,8 +21,8 @@ export PATH="CriDiff_env/bin:$PATH"
 cd ../UNet_SR
 
 
-python3 test.py --checkpoint 'pretrain_PICAI' 
+python3 test.py --checkpoint 'pretrain_PICAI' --test_bs 15
 
-python3 test.py --checkpoint 'pretrain_PICAI_cont_fusion_1_best' --use_T2W --fusion 
+python3 test.py --checkpoint 'pretrain_PICAI_cont_fusion_1_best' --use_T2W --fusion --test_bs 15
 
 date

@@ -1,0 +1,113 @@
+GPU Prolog Script v1.14
+This is a GPU node.
+Enough GPUs available.
+Allocating card 0
+dt ago 26 16:32:15 BST 2025
+Tue Aug 26 16:32:15 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 550.127.05             Driver Version: 550.127.05     CUDA Version: 12.4     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce GTX TITAN X     On  |   00000000:3B:00.0 Off |                  N/A |
+| 22%   26C    P8             16W /  250W |       0MiB /  12288MiB |      0%   E. Process |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA GeForce RTX 2080        On  |   00000000:5E:00.0 Off |                  N/A |
+| 22%   25C    P8              8W /  215W |       1MiB /   8192MiB |      0%   E. Process |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA GeForce RTX 2080        On  |   00000000:B1:00.0 Off |                  N/A |
+| 22%   27C    P8              1W /  215W |       1MiB /   8192MiB |      0%   E. Process |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA GeForce RTX 2080        On  |   00000000:D9:00.0 Off |                  N/A |
+| 20%   27C    P8              2W /  215W |       1MiB /   8192MiB |      0%   E. Process |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Parameters:
+- img_size: 64
+- train_bs: 16
+- test_bs: 1
+- drop_first: 0.1
+- drop_last: 0.5
+- use_T2W: False
+- use_histo: False
+- n_epochs: 50
+- lr: 2.5e-07
+- n_epochs_1: 50
+- n_epochs_2: 50
+- lr_1: 1e-07
+- lr_2: 1e-07
+- factor: 0.5
+- patience: 4
+- cooldown: 2
+- lr_factor: 0.1
+- λ_pixel: 10.0
+- λ_perct: 0.01
+- λ_ssim: 1.0
+- λ_contrast: 1.0
+- checkpoint_adc: pretrain_PICAI
+- checkpoint_t2w: default_64
+- checkpoint: None
+- save_as: None
+- finetune: False
+- fusion: False
+- surgical_only: False
+
+
+Creating models...
+Loading model weights...
+Creating datasets...
+Loading data from pretrain_train...
+Loading T2W reconstruction UNet from default_64
+Loading data from pretrain_test...
+Loading T2W reconstruction UNet from default_64
+Starting training...
+
+Epoch  0
+Learning rate ADC: 2.5e-07
+Learning rate T2W: 2.5e-07
+Traceback (most recent call last):
+  File "/cluster/project7/ProsRegNet_CellCount/UNet_SR/fusion/finetune_contrastive.py", line 77, in <module>
+    main()
+  File "/cluster/project7/ProsRegNet_CellCount/UNet_SR/fusion/finetune_contrastive.py", line 68, in main
+    train_evaluate(model_adc, model_t2w, train_dl, test_dl, optim_adc, optim_t2w, sched_adc, sched_t2w, args.n_epochs, checkpoint_adc, checkpoint_t2w, losses, λ_loss)
+  File "/cluster/project7/ProsRegNet_CellCount/UNet_SR/fusion/train_functions.py", line 218, in train_evaluate
+    train_total_adc, train_all_adc, train_total_t2w, train_all_t2w, train_contrast = train(model_adc, model_t2w, optim_adc, optim_t2w, train_dl, losses, λ_loss)
+  File "/cluster/project7/ProsRegNet_CellCount/UNet_SR/fusion/train_functions.py", line 67, in train
+    for data in dataloader:
+  File "/cluster/project7/ProsRegNet_CellCount/CriDiff/CriDiff_env/lib/python3.9/site-packages/torch/utils/data/dataloader.py", line 630, in __next__
+    data = self._next_data()
+  File "/cluster/project7/ProsRegNet_CellCount/CriDiff/CriDiff_env/lib/python3.9/site-packages/torch/utils/data/dataloader.py", line 1345, in _next_data
+    return self._process_data(data)
+  File "/cluster/project7/ProsRegNet_CellCount/CriDiff/CriDiff_env/lib/python3.9/site-packages/torch/utils/data/dataloader.py", line 1371, in _process_data
+    data.reraise()
+  File "/cluster/project7/ProsRegNet_CellCount/CriDiff/CriDiff_env/lib/python3.9/site-packages/torch/_utils.py", line 694, in reraise
+    raise exception
+RuntimeError: Caught RuntimeError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/cluster/project7/ProsRegNet_CellCount/CriDiff/CriDiff_env/lib/python3.9/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
+    data = fetcher.fetch(index)
+  File "/cluster/project7/ProsRegNet_CellCount/CriDiff/CriDiff_env/lib/python3.9/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/cluster/project7/ProsRegNet_CellCount/CriDiff/CriDiff_env/lib/python3.9/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/cluster/project7/ProsRegNet_CellCount/UNet_SR/dataset/dataset.py", line 71, in __getitem__
+    _, sample['T2W embed'] = self.t2w_model(sample['T2W'].unsqueeze(0).float().cuda())
+  File "/cluster/project7/ProsRegNet_CellCount/CriDiff/CriDiff_env/lib/python3.9/site-packages/torch/cuda/__init__.py", line 284, in _lazy_init
+    raise RuntimeError(
+RuntimeError: Cannot re-initialize CUDA in forked subprocess. To use CUDA with multiprocessing, you must use the 'spawn' start method
+
+dt ago 26 16:36:42 BST 2025
+GPU Epilog Script v0.30

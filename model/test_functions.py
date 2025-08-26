@@ -15,7 +15,7 @@ def compute_metrics(pred, gt):
     ssim = ssim_metric(gt_np, pred_np, data_range=1.0)
     return mse, psnr, ssim
 
-def evaluate_results(model, dataloader, device, batch_size, use_T2W=False):
+def evaluate_results(model, dataloader, device, batch_size, model_t2w=None):
     mse_list, psnr_list, ssim_list = [], [], []
     
     for batch in dataloader:
@@ -24,8 +24,9 @@ def evaluate_results(model, dataloader, device, batch_size, use_T2W=False):
         ###  FIX THIS
         
         with torch.no_grad():
-            if use_T2W:
-                pred,_   = model(lowres, torch.squeeze(batch['T2W embed'].to(device)))
+            if model_t2w is not None:
+                _, embed = model_t2w(batch['T2W'].float().cuda())
+                pred,_   = model(lowres, torch.squeeze(embed.to(device)))
             else:
                 pred,_   = model(lowres)
         
@@ -42,16 +43,15 @@ def evaluate_results(model, dataloader, device, batch_size, use_T2W=False):
 def format_image(img):
     return np.squeeze((img).cpu().numpy())
 
-def plot_image(image, fig, axes, i, j):
-    # Format image
+def plot_image(image, fig, axes, i, j, colorbar=True):
     image  = format_image(image)
             
-    # Low-res
     img_plot = axes[i, j].imshow(image,  cmap='gray', vmin=0, vmax=1)
     axes[i, j].axis('off')
-    fig.colorbar(img_plot, ax=axes[i, j])
+    if colorbar:
+        fig.colorbar(img_plot, ax=axes[i, j])
     
-def visualize_results(model, dataset, device, name, use_T2W=False, batch_size=5, seed=1):
+def visualize_results(model, dataset, device, name, use_T2W=False, model_t2w=None, batch_size=5, seed=1):
     ncols = 5 if use_T2W else 4
     fig, axes = plt.subplots(nrows=batch_size, ncols=ncols, figsize=(3*ncols,3*batch_size))
     axes[0,0].set_title('Low res (Input)')
@@ -73,30 +73,28 @@ def visualize_results(model, dataset, device, name, use_T2W=False, batch_size=5,
             
             # Use model to get prediction
             if use_T2W:
-                t2w_image, t2w_embed = sample['T2W'].to(device), sample['T2W embed'].to(device)
-                pred,_ = model(lowres, t2w_embed)
+                t2w_image = sample['T2W'].to(device)
+                _, embed  = model_t2w(t2w_image.float().cuda())
+                pred, _   = model(lowres, t2w_embed)
             else:
                 pred,_ = model(lowres)
             
             # Plot images
             plot_image(lowres,  fig, axes, i, 0)
             plot_image(pred,    fig, axes, i, 1)
+            plot_image(pred,    fig, axes, i, 2, False)
             plot_image(highres, fig, axes, i, 3)
             if use_T2W:
                 plot_image(t2w_image, fig, axes, i, 4)
 
             # Error
-            im_base = axes[i, 2].imshow(format_image(pred), cmap='gray', vmin=0, vmax=1)
-            axes[i, 2].axis('off')
-            
             err = np.abs(format_image(pred) - format_image(highres))
-            p99 = np.percentile(err, 99)
+            p99 = np.percentile(err, 99.5)
             den = p99 if p99 > 1e-8 else (err.max() + 1e-8)
             err_norm = np.clip(err / den, 0, 1)
 
             im_overlay = axes[i, 2].imshow(err_norm, cmap='RdYlGn_r', vmin=0, vmax=1, alpha=0.6)
             cbar = fig.colorbar(im_overlay, ax=axes[i, 2])
-            cbar.set_label('Predicted (with error)')
             
             
         fig.tight_layout(pad=0.25)

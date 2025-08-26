@@ -1,10 +1,8 @@
-import torch.optim as optim
 import torch
 from torch.nn                   import L1Loss
 from torch.utils.data           import DataLoader
-from torch.optim.lr_scheduler   import ReduceLROnPlateau
 
-from train_functions    import train_evaluate, CHECKPOINTS_ADC, CHECKPOINTS_T2W
+from train_functions    import train_evaluate, get_scheduler, CHECKPOINTS_ADC, CHECKPOINTS_T2W
 
 import sys
 import os
@@ -21,18 +19,6 @@ from runetv2 import RUNet as T2Wnet
 
 folder = '/cluster/project7/backup_masramon/IQT/'
 
-
-def get_scheduler(model, args):
-    optimizer = optim.Adam(model.parameters(), lr = args.lr)
-    scheduler = ReduceLROnPlateau(
-        optimizer, 
-        'min', 
-        factor   = args.factor, 
-        patience = args.patience, 
-        cooldown = args.cooldown, 
-        min_lr   = 1e-8
-    )
-    return optimizer, scheduler
     
 def main():
     # Create model
@@ -58,6 +44,7 @@ def main():
         img_size        = args.img_size, 
         is_finetune     = args.finetune, 
         use_T2W         = True, 
+        t2w_model_path  = args.checkpoint_t2w
     )
     test_dataset = MyDataset(
         folder + data_folder, 
@@ -65,6 +52,7 @@ def main():
         img_size        = args.img_size, 
         is_finetune     = args.finetune, 
         use_T2W         = True, 
+        t2w_model_path  = args.checkpoint_t2w
     )
     train_dl = DataLoader(train_dataset, batch_size=args.train_bs, shuffle=True,  num_workers=8)
     test_dl  = DataLoader(test_dataset,  batch_size=args.test_bs,  shuffle=False, num_workers=0)

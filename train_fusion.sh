@@ -20,6 +20,6 @@ source CriDiff_env/bin/activate
 export PATH="CriDiff_env/bin:$PATH"
 cd ../UNet_SR/fusion
 
-python3 finetune_fusion.py 
+python3 finetune_fusion.py --checkpoint_adc pretrain_PICAI_cont --checkpoint_t2w default_64_cont --lr 0.00000025 --λ_ssim 0.1
 
 date

@@ -28,7 +28,6 @@ def main():
         img_size        = args.img_size, 
         is_finetune     = args.finetune, 
         use_T2W         = args.use_T2W, 
-        t2w_model_path  = args.checkpoint_t2w
     )
 
     # Load models
@@ -44,6 +43,13 @@ def main():
             print('Building RUNet v2 (embedding size 768)')
             model   = RUNet_768(args.drop_first, args.drop_last).to(device)
             model.load_state_dict(torch.load(f"{CHECKPOINTS_ADC}/{args.checkpoint}.pth"))
+    
+    if args.checkpoint_t2w is not None:
+        # Load pre-trained T2W embedding model
+        print(f'Loading T2W reconstruction UNet from {args.checkpoint_t2w}')
+        self.t2w_model = T2Wnet(args.drop_first, args.drop_last, img_size=img_size).to(device)
+        self.t2w_model.load_state_dict(torch.load(f'{CHECKPOINTS_T2W}{args.checkpoint_t2w}.pth'))
+        self.t2w_model.eval() 
 
     save_name = args.checkpoint+'_HistoMRI' if args.finetune else args.checkpoint+'_PICAI' 
     visualize_results(model, dataset, device, save_name, use_T2W=args.use_T2W, batch_size=args.test_bs)

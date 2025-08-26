@@ -7,7 +7,7 @@
 #$ -V
 
 #$ -wd /cluster/project7/ProsRegNet_CellCount/UNet_SR
-#$ -N Train_UNet
+#$ -N FT_contrastive
 
 date
 nvidia-smi
@@ -20,7 +20,6 @@ source CriDiff_env/bin/activate
 export PATH="CriDiff_env/bin:$PATH"
 cd ../UNet_SR/fusion
 
-
-python3 finetune_contrastive.py --checkpoint_adc pretrain_PICAI_cont --checkpoint_t2w default_64_cont --lr 0.00000025
+python3 finetune_contrastive.py --checkpoint_adc pretrain_PICAI --checkpoint_t2w default_64 --lr 0.00000025 
 
 date
