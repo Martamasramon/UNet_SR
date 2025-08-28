@@ -2,7 +2,7 @@ import torch
 from torch.nn                   import L1Loss
 from torch.utils.data           import DataLoader
 
-from train_functions    import train_evaluate, get_scheduler, CHECKPOINTS_ADC, CHECKPOINTS_T2W
+from fusion_train_functions    import train_evaluate, get_scheduler, CHECKPOINTS_ADC, CHECKPOINTS_T2W
 
 import sys
 import os

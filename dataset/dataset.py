@@ -8,7 +8,7 @@ from dataset.transforms import get_train_transform, get_test_transform, get_t2w_
 import sys
 import os
 sys.path.append(os.path.abspath('/cluster/project7/ProsRegNet_CellCount/UNet_SR/fusion'))
-from fusion.train_functions import CHECKPOINTS_ADC, CHECKPOINTS_T2W
+from fusion.fusion_train_functions import CHECKPOINTS_ADC, CHECKPOINTS_T2W
 
 sys.path.append(os.path.abspath('/cluster/project7/ProsRegNet_CellCount/UNet/runet_t2w'))
 from runetv2 import RUNet as T2Wnet
@@ -19,6 +19,7 @@ class MyDataset(Dataset):
       img_path, 
       data_type,
       img_size       = 64, 
+      down_factor    = 2,
       use_T2W        = False, 
       is_finetune    = False, 
       surgical_only  = False,
@@ -31,7 +32,7 @@ class MyDataset(Dataset):
     self.masked     = '_mask' if use_mask else ''
     self.img_path   = img_path
     self.img_dict   = pd.read_csv(f'/cluster/project7/ProsRegNet_CellCount/Dataset_preparation/{root}{self.masked}_{data_type}.csv')
-    self.transform  = get_train_transform(img_size) if data_type=='train' else get_test_transform(img_size)
+    self.transform  = get_train_transform(img_size, down_factor) if data_type=='train' else get_test_transform(img_size, down_factor)
     self.t2w_transform = get_t2w_transform(img_size)
     self.use_T2W    = use_T2W
     
@@ -56,7 +57,7 @@ class MyDataset(Dataset):
     if self.use_T2W:
       t2w = Image.open(f'{self.img_path}/T2W{self.masked}/{item["SID"]}').convert('L')      
       sample['T2W'] = self.t2w_transform(t2w)
-            
+    
     return sample
 
   def __len__(self):

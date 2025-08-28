@@ -15,7 +15,7 @@ def compute_metrics(pred, gt):
     ssim = ssim_metric(gt_np, pred_np, data_range=1.0)
     return mse, psnr, ssim
 
-def evaluate_results(model, dataloader, device, batch_size, model_t2w=None):
+def evaluate_results(model, model_t2w, dataloader, device, batch_size, fusion):
     mse_list, psnr_list, ssim_list = [], [], []
     
     for batch in dataloader:
@@ -24,7 +24,7 @@ def evaluate_results(model, dataloader, device, batch_size, model_t2w=None):
         ###  FIX THIS
         
         with torch.no_grad():
-            if model_t2w is not None:
+            if fusion:
                 _, embed = model_t2w(batch['T2W'].float().cuda())
                 pred,_   = model(lowres, torch.squeeze(embed.to(device)))
             else:
@@ -51,7 +51,7 @@ def plot_image(image, fig, axes, i, j, colorbar=True):
     if colorbar:
         fig.colorbar(img_plot, ax=axes[i, j])
     
-def visualize_results(model, dataset, device, name, use_T2W=False, model_t2w=None, batch_size=5, seed=1):
+def visualize_results(model, model_t2w, dataset, device, name, use_T2W, batch_size, fusion, seed=1):
     ncols = 5 if use_T2W else 4
     fig, axes = plt.subplots(nrows=batch_size, ncols=ncols, figsize=(3*ncols,3*batch_size))
     axes[0,0].set_title('Low res (Input)')
@@ -74,7 +74,8 @@ def visualize_results(model, dataset, device, name, use_T2W=False, model_t2w=Non
             # Use model to get prediction
             if use_T2W:
                 t2w_image = sample['T2W'].to(device)
-                _, embed  = model_t2w(t2w_image.float().cuda())
+            if fusion:
+                _, t2w_embed = model_t2w(t2w_image.unsqueeze(0).float().cuda())
                 pred, _   = model(lowres, t2w_embed)
             else:
                 pred,_ = model(lowres)

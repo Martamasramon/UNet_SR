@@ -1,0 +1,606 @@
+GPU Prolog Script v1.14
+This is a GPU node.
+Enough GPUs available.
+Allocating card 2
+dc ago 27 16:41:32 BST 2025
+Wed Aug 27 16:41:32 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 550.127.05             Driver Version: 550.127.05     CUDA Version: 12.4     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA H100 80GB HBM3          On  |   00000000:1B:00.0 Off |                    0 |
+| N/A   30C    P0             71W /  700W |       1MiB /  81559MiB |      0%   E. Process |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA H100 80GB HBM3          On  |   00000000:29:00.0 Off |                    0 |
+| N/A   35C    P0            216W /  700W |    4574MiB /  81559MiB |     61%   E. Process |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA H100 80GB HBM3          On  |   00000000:45:00.0 Off |                    0 |
+| N/A   26C    P0             68W /  700W |       1MiB /  81559MiB |      0%   E. Process |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA H100 80GB HBM3          On  |   00000000:4E:00.0 Off |                    0 |
+| N/A   59C    P0            478W /  700W |   52338MiB /  81559MiB |     74%   E. Process |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   4  NVIDIA H100 80GB HBM3          On  |   00000001:1B:00.0 Off |                    0 |
+| N/A   66C    P0            500W /  700W |   68894MiB /  81559MiB |     93%   E. Process |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   5  NVIDIA H100 80GB HBM3          On  |   00000001:24:00.0 Off |                    0 |
+| N/A   29C    P0             71W /  700W |       1MiB /  81559MiB |      0%   E. Process |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   6  NVIDIA H100 80GB HBM3          On  |   00000001:45:00.0 Off |                    0 |
+| N/A   51C    P0            474W /  700W |   68894MiB /  81559MiB |     77%   E. Process |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   7  NVIDIA H100 80GB HBM3          On  |   00000001:4E:00.0 Off |                    0 |
+| N/A   30C    P0             73W /  700W |       1MiB /  81559MiB |      0%   E. Process |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    1   N/A  N/A    164980      C   python3                                      4564MiB |
+|    3   N/A  N/A     92018      C   python3                                     52328MiB |
+|    4   N/A  N/A      6675      C   python3                                     68884MiB |
+|    6   N/A  N/A    192685      C   python3                                     68884MiB |
++-----------------------------------------------------------------------------------------+
+Parameters:
+- img_size: 64
+- train_bs: 16
+- test_bs: 1
+- drop_first: 0.1
+- drop_last: 0.5
+- use_T2W: False
+- use_histo: False
+- n_epochs: 50
+- lr: 1e-06
+- n_epochs_1: 50
+- n_epochs_2: 50
+- lr_1: 2.5e-07
+- lr_2: 2.5e-07
+- factor: 0.5
+- patience: 4
+- cooldown: 2
+- lr_factor: 0.1
+- λ_pixel: 10.0
+- λ_perct: 0.01
+- λ_ssim: 1.0
+- λ_contrast: 1.0
+- checkpoint_adc: pretrain_PICAI_cont_best
+- checkpoint_t2w: default_64_cont_best
+- checkpoint: None
+- save_as: None
+- masked: False
+- finetune: False
+- fusion: False
+- surgical_only: False
+
+
+Creating models...
+Loading model weights...
+Creating datasets...
+Loading data from pretrain_train...
+Loading data from pretrain_test...
+Starting training stage 1 (frozen encoder)...
+
+Epoch  0
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6592. Pixel: 0.0340, SSIM: 0.1659, Contrastive: 0.1529, 
+Validation Loss: 0.9123. Pixel: 0.0487, SSIM: 0.2445, Contrastive: 0.1812, 
+Best model saved at /cluster/project7/ProsRegNet_CellCount/UNet_SR/checkpoints/pretrain_PICAI_cont_best_fusion_1_best.pth
+
+Epoch  1
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6537. Pixel: 0.0336, SSIM: 0.1643, Contrastive: 0.1531, 
+Validation Loss: 0.9293. Pixel: 0.0503, SSIM: 0.2407, Contrastive: 0.1855, 
+
+Epoch  2
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6499. Pixel: 0.0333, SSIM: 0.1634, Contrastive: 0.1531, 
+Validation Loss: 0.8889. Pixel: 0.0475, SSIM: 0.2422, Contrastive: 0.1722, 
+Best model saved at /cluster/project7/ProsRegNet_CellCount/UNet_SR/checkpoints/pretrain_PICAI_cont_best_fusion_1_best.pth
+
+Epoch  3
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6475. Pixel: 0.0331, SSIM: 0.1632, Contrastive: 0.1534, 
+Validation Loss: 0.8997. Pixel: 0.0488, SSIM: 0.2417, Contrastive: 0.1699, 
+
+Epoch  4
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6464. Pixel: 0.0330, SSIM: 0.1627, Contrastive: 0.1532, 
+Validation Loss: 0.8921. Pixel: 0.0477, SSIM: 0.2427, Contrastive: 0.1724, 
+
+Epoch  5
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6450. Pixel: 0.0329, SSIM: 0.1627, Contrastive: 0.1531, 
+Validation Loss: 0.8877. Pixel: 0.0479, SSIM: 0.2355, Contrastive: 0.1737, 
+Best model saved at /cluster/project7/ProsRegNet_CellCount/UNet_SR/checkpoints/pretrain_PICAI_cont_best_fusion_1_best.pth
+
+Epoch  6
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6432. Pixel: 0.0328, SSIM: 0.1619, Contrastive: 0.1530, 
+Validation Loss: 0.8936. Pixel: 0.0476, SSIM: 0.2410, Contrastive: 0.1764, 
+
+Epoch  7
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6422. Pixel: 0.0327, SSIM: 0.1616, Contrastive: 0.1532, 
+Validation Loss: 0.8744. Pixel: 0.0467, SSIM: 0.2424, Contrastive: 0.1653, 
+Best model saved at /cluster/project7/ProsRegNet_CellCount/UNet_SR/checkpoints/pretrain_PICAI_cont_best_fusion_1_best.pth
+
+Epoch  8
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6427. Pixel: 0.0327, SSIM: 0.1619, Contrastive: 0.1534, 
+Validation Loss: 0.9259. Pixel: 0.0496, SSIM: 0.2408, Contrastive: 0.1888, 
+
+Epoch  9
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6408. Pixel: 0.0326, SSIM: 0.1614, Contrastive: 0.1532, 
+Validation Loss: 0.8746. Pixel: 0.0468, SSIM: 0.2377, Contrastive: 0.1690, 
+
+Epoch  10
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6394. Pixel: 0.0325, SSIM: 0.1612, Contrastive: 0.1530, 
+Validation Loss: 0.8431. Pixel: 0.0459, SSIM: 0.2395, Contrastive: 0.1448, 
+Best model saved at /cluster/project7/ProsRegNet_CellCount/UNet_SR/checkpoints/pretrain_PICAI_cont_best_fusion_1_best.pth
+
+Epoch  11
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6372. Pixel: 0.0324, SSIM: 0.1607, Contrastive: 0.1530, 
+Validation Loss: 0.8942. Pixel: 0.0483, SSIM: 0.2385, Contrastive: 0.1732, 
+
+Epoch  12
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6366. Pixel: 0.0323, SSIM: 0.1604, Contrastive: 0.1531, 
+Validation Loss: 0.8950. Pixel: 0.0488, SSIM: 0.2435, Contrastive: 0.1638, 
+
+Epoch  13
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6361. Pixel: 0.0323, SSIM: 0.1603, Contrastive: 0.1530, 
+Validation Loss: 0.8797. Pixel: 0.0473, SSIM: 0.2385, Contrastive: 0.1681, 
+
+Epoch  14
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6357. Pixel: 0.0322, SSIM: 0.1602, Contrastive: 0.1531, 
+Validation Loss: 0.8568. Pixel: 0.0462, SSIM: 0.2362, Contrastive: 0.1581, 
+
+Epoch  15
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6358. Pixel: 0.0323, SSIM: 0.1601, Contrastive: 0.1528, 
+Validation Loss: 0.8663. Pixel: 0.0467, SSIM: 0.2448, Contrastive: 0.1547, 
+
+Epoch  16
+Learning rate ADC: 1.25e-07
+Training Loss: 0.6354. Pixel: 0.0322, SSIM: 0.1601, Contrastive: 0.1530, 
+Validation Loss: 0.8842. Pixel: 0.0476, SSIM: 0.2442, Contrastive: 0.1645, 
+
+Epoch  17
+Learning rate ADC: 1.25e-07
+Training Loss: 0.6335. Pixel: 0.0321, SSIM: 0.1597, Contrastive: 0.1528, 
+Validation Loss: 0.8789. Pixel: 0.0474, SSIM: 0.2427, Contrastive: 0.1621, 
+
+Epoch  18
+Learning rate ADC: 1.25e-07
+Training Loss: 0.6335. Pixel: 0.0321, SSIM: 0.1595, Contrastive: 0.1533, 
+Validation Loss: 0.8526. Pixel: 0.0464, SSIM: 0.2334, Contrastive: 0.1551, 
+
+Epoch  19
+Learning rate ADC: 1.25e-07
+Training Loss: 0.6338. Pixel: 0.0321, SSIM: 0.1598, Contrastive: 0.1531, 
+Validation Loss: 0.8627. Pixel: 0.0469, SSIM: 0.2398, Contrastive: 0.1540, 
+
+Epoch  20
+Learning rate ADC: 1.25e-07
+Training Loss: 0.6322. Pixel: 0.0320, SSIM: 0.1592, Contrastive: 0.1531, 
+Validation Loss: 0.8681. Pixel: 0.0464, SSIM: 0.2474, Contrastive: 0.1568, 
+
+Epoch  21
+Learning rate ADC: 1.25e-07
+Training Loss: 0.6315. Pixel: 0.0319, SSIM: 0.1590, Contrastive: 0.1531, 
+Validation Loss: 0.8757. Pixel: 0.0468, SSIM: 0.2410, Contrastive: 0.1662, 
+
+Epoch  22
+Learning rate ADC: 1.25e-07
+Training Loss: 0.6331. Pixel: 0.0320, SSIM: 0.1595, Contrastive: 0.1532, 
+Validation Loss: 0.9125. Pixel: 0.0491, SSIM: 0.2418, Contrastive: 0.1795, 
+
+Epoch  23
+Learning rate ADC: 6.25e-08
+Training Loss: 0.6315. Pixel: 0.0319, SSIM: 0.1588, Contrastive: 0.1534, 
+Validation Loss: 0.8980. Pixel: 0.0481, SSIM: 0.2409, Contrastive: 0.1756, 
+
+Epoch  24
+Learning rate ADC: 6.25e-08
+Training Loss: 0.6308. Pixel: 0.0319, SSIM: 0.1589, Contrastive: 0.1532, 
+Validation Loss: 0.8491. Pixel: 0.0467, SSIM: 0.2444, Contrastive: 0.1377, 
+
+Epoch  25
+Learning rate ADC: 6.25e-08
+Training Loss: 0.6306. Pixel: 0.0319, SSIM: 0.1588, Contrastive: 0.1530, 
+Validation Loss: 0.8714. Pixel: 0.0462, SSIM: 0.2359, Contrastive: 0.1738, 
+
+Epoch  26
+Learning rate ADC: 6.25e-08
+Training Loss: 0.6321. Pixel: 0.0320, SSIM: 0.1589, Contrastive: 0.1534, 
+Validation Loss: 0.9244. Pixel: 0.0493, SSIM: 0.2486, Contrastive: 0.1830, 
+
+Epoch  27
+Learning rate ADC: 6.25e-08
+Training Loss: 0.6315. Pixel: 0.0319, SSIM: 0.1590, Contrastive: 0.1531, 
+Validation Loss: 0.8863. Pixel: 0.0477, SSIM: 0.2469, Contrastive: 0.1623, 
+
+Epoch  28
+Learning rate ADC: 6.25e-08
+Training Loss: 0.6299. Pixel: 0.0318, SSIM: 0.1588, Contrastive: 0.1529, 
+Validation Loss: 0.8887. Pixel: 0.0474, SSIM: 0.2515, Contrastive: 0.1636, 
+
+Epoch  29
+Learning rate ADC: 6.25e-08
+Training Loss: 0.6300. Pixel: 0.0318, SSIM: 0.1586, Contrastive: 0.1532, 
+Validation Loss: 0.8925. Pixel: 0.0473, SSIM: 0.2341, Contrastive: 0.1851, 
+
+Epoch  30
+Learning rate ADC: 3.125e-08
+Training Loss: 0.6305. Pixel: 0.0319, SSIM: 0.1587, Contrastive: 0.1531, 
+Validation Loss: 0.8590. Pixel: 0.0465, SSIM: 0.2383, Contrastive: 0.1559, 
+
+Epoch  31
+Learning rate ADC: 3.125e-08
+Training Loss: 0.6300. Pixel: 0.0318, SSIM: 0.1586, Contrastive: 0.1531, 
+Validation Loss: 0.8963. Pixel: 0.0477, SSIM: 0.2444, Contrastive: 0.1746, 
+
+Epoch  32
+Learning rate ADC: 3.125e-08
+Training Loss: 0.6306. Pixel: 0.0319, SSIM: 0.1590, Contrastive: 0.1531, 
+Validation Loss: 0.9094. Pixel: 0.0489, SSIM: 0.2451, Contrastive: 0.1756, 
+
+Epoch  33
+Learning rate ADC: 3.125e-08
+Training Loss: 0.6301. Pixel: 0.0318, SSIM: 0.1589, Contrastive: 0.1530, 
+Validation Loss: 0.8971. Pixel: 0.0487, SSIM: 0.2422, Contrastive: 0.1676, 
+
+Epoch  34
+Learning rate ADC: 3.125e-08
+Training Loss: 0.6304. Pixel: 0.0318, SSIM: 0.1589, Contrastive: 0.1531, 
+Validation Loss: 0.8697. Pixel: 0.0473, SSIM: 0.2452, Contrastive: 0.1518, 
+
+Epoch  35
+Learning rate ADC: 3.125e-08
+Training Loss: 0.6301. Pixel: 0.0318, SSIM: 0.1586, Contrastive: 0.1531, 
+Validation Loss: 0.8405. Pixel: 0.0461, SSIM: 0.2353, Contrastive: 0.1437, 
+Best model saved at /cluster/project7/ProsRegNet_CellCount/UNet_SR/checkpoints/pretrain_PICAI_cont_best_fusion_1_best.pth
+
+Epoch  36
+Learning rate ADC: 3.125e-08
+Training Loss: 0.6278. Pixel: 0.0317, SSIM: 0.1581, Contrastive: 0.1529, 
+Validation Loss: 0.8902. Pixel: 0.0484, SSIM: 0.2496, Contrastive: 0.1563, 
+
+Epoch  37
+Learning rate ADC: 3.125e-08
+Training Loss: 0.6295. Pixel: 0.0318, SSIM: 0.1585, Contrastive: 0.1533, 
+Validation Loss: 0.8840. Pixel: 0.0481, SSIM: 0.2473, Contrastive: 0.1561, 
+
+Epoch  38
+Learning rate ADC: 3.125e-08
+Training Loss: 0.6299. Pixel: 0.0318, SSIM: 0.1584, Contrastive: 0.1534, 
+Validation Loss: 0.8818. Pixel: 0.0479, SSIM: 0.2435, Contrastive: 0.1594, 
+
+Epoch  39
+Learning rate ADC: 3.125e-08
+Training Loss: 0.6296. Pixel: 0.0318, SSIM: 0.1587, Contrastive: 0.1534, 
+Validation Loss: 0.8982. Pixel: 0.0480, SSIM: 0.2428, Contrastive: 0.1758, 
+
+Epoch  40
+Learning rate ADC: 3.125e-08
+Training Loss: 0.6302. Pixel: 0.0318, SSIM: 0.1584, Contrastive: 0.1533, 
+Validation Loss: 0.8729. Pixel: 0.0470, SSIM: 0.2454, Contrastive: 0.1575, 
+
+Epoch  41
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.6300. Pixel: 0.0318, SSIM: 0.1586, Contrastive: 0.1531, 
+Validation Loss: 0.8824. Pixel: 0.0473, SSIM: 0.2432, Contrastive: 0.1661, 
+
+Epoch  42
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.6288. Pixel: 0.0318, SSIM: 0.1582, Contrastive: 0.1529, 
+Validation Loss: 0.8733. Pixel: 0.0470, SSIM: 0.2421, Contrastive: 0.1610, 
+
+Epoch  43
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.6284. Pixel: 0.0317, SSIM: 0.1585, Contrastive: 0.1529, 
+Validation Loss: 0.9009. Pixel: 0.0486, SSIM: 0.2436, Contrastive: 0.1715, 
+
+Epoch  44
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.6291. Pixel: 0.0318, SSIM: 0.1585, Contrastive: 0.1531, 
+Validation Loss: 0.8705. Pixel: 0.0469, SSIM: 0.2389, Contrastive: 0.1626, 
+
+Epoch  45
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.6294. Pixel: 0.0318, SSIM: 0.1584, Contrastive: 0.1532, 
+Validation Loss: 0.8888. Pixel: 0.0474, SSIM: 0.2362, Contrastive: 0.1789, 
+
+Epoch  46
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.6288. Pixel: 0.0317, SSIM: 0.1586, Contrastive: 0.1531, 
+Validation Loss: 0.8593. Pixel: 0.0457, SSIM: 0.2308, Contrastive: 0.1713, 
+
+Epoch  47
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.6284. Pixel: 0.0317, SSIM: 0.1583, Contrastive: 0.1532, 
+Validation Loss: 0.9186. Pixel: 0.0490, SSIM: 0.2420, Contrastive: 0.1862, 
+
+Epoch  48
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.6301. Pixel: 0.0318, SSIM: 0.1586, Contrastive: 0.1533, 
+Validation Loss: 0.9006. Pixel: 0.0484, SSIM: 0.2464, Contrastive: 0.1699, 
+
+Epoch  49
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.6289. Pixel: 0.0317, SSIM: 0.1585, Contrastive: 0.1533, 
+Validation Loss: 0.8566. Pixel: 0.0472, SSIM: 0.2404, Contrastive: 0.1440, 
+Starting training stage 2 (unfrozen)...
+
+Epoch  0
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6309. Pixel: 0.0320, SSIM: 0.1591, Contrastive: 0.1521, 
+Validation Loss: 0.8814. Pixel: 0.0476, SSIM: 0.2366, Contrastive: 0.1684, 
+Best model saved at /cluster/project7/ProsRegNet_CellCount/UNet_SR/checkpoints/pretrain_PICAI_cont_best_fusion_2_best.pth
+
+Epoch  1
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6260. Pixel: 0.0318, SSIM: 0.1586, Contrastive: 0.1491, 
+Validation Loss: 0.9163. Pixel: 0.0496, SSIM: 0.2491, Contrastive: 0.1708, 
+
+Epoch  2
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6230. Pixel: 0.0318, SSIM: 0.1584, Contrastive: 0.1471, 
+Validation Loss: 0.8861. Pixel: 0.0476, SSIM: 0.2451, Contrastive: 0.1646, 
+
+Epoch  3
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6198. Pixel: 0.0317, SSIM: 0.1579, Contrastive: 0.1445, 
+Validation Loss: 0.8784. Pixel: 0.0477, SSIM: 0.2559, Contrastive: 0.1455, 
+Best model saved at /cluster/project7/ProsRegNet_CellCount/UNet_SR/checkpoints/pretrain_PICAI_cont_best_fusion_2_best.pth
+
+Epoch  4
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6162. Pixel: 0.0316, SSIM: 0.1574, Contrastive: 0.1425, 
+Validation Loss: 0.8754. Pixel: 0.0475, SSIM: 0.2394, Contrastive: 0.1605, 
+Best model saved at /cluster/project7/ProsRegNet_CellCount/UNet_SR/checkpoints/pretrain_PICAI_cont_best_fusion_2_best.pth
+
+Epoch  5
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6149. Pixel: 0.0317, SSIM: 0.1573, Contrastive: 0.1404, 
+Validation Loss: 0.8290. Pixel: 0.0460, SSIM: 0.2376, Contrastive: 0.1318, 
+Best model saved at /cluster/project7/ProsRegNet_CellCount/UNet_SR/checkpoints/pretrain_PICAI_cont_best_fusion_2_best.pth
+
+Epoch  6
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6111. Pixel: 0.0316, SSIM: 0.1569, Contrastive: 0.1386, 
+Validation Loss: 0.8783. Pixel: 0.0470, SSIM: 0.2360, Contrastive: 0.1718, 
+
+Epoch  7
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6076. Pixel: 0.0315, SSIM: 0.1565, Contrastive: 0.1364, 
+Validation Loss: 0.8814. Pixel: 0.0486, SSIM: 0.2425, Contrastive: 0.1534, 
+
+Epoch  8
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6059. Pixel: 0.0315, SSIM: 0.1563, Contrastive: 0.1349, 
+Validation Loss: 0.8960. Pixel: 0.0495, SSIM: 0.2497, Contrastive: 0.1512, 
+
+Epoch  9
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6030. Pixel: 0.0314, SSIM: 0.1560, Contrastive: 0.1331, 
+Validation Loss: 0.8518. Pixel: 0.0471, SSIM: 0.2392, Contrastive: 0.1421, 
+
+Epoch  10
+Learning rate ADC: 2.5e-07
+Training Loss: 0.6018. Pixel: 0.0314, SSIM: 0.1557, Contrastive: 0.1316, 
+Validation Loss: 0.8418. Pixel: 0.0475, SSIM: 0.2435, Contrastive: 0.1234, 
+
+Epoch  11
+Learning rate ADC: 1.25e-07
+Training Loss: 0.5993. Pixel: 0.0313, SSIM: 0.1560, Contrastive: 0.1300, 
+Validation Loss: 0.8829. Pixel: 0.0487, SSIM: 0.2379, Contrastive: 0.1581, 
+
+Epoch  12
+Learning rate ADC: 1.25e-07
+Training Loss: 0.5975. Pixel: 0.0312, SSIM: 0.1555, Contrastive: 0.1296, 
+Validation Loss: 0.8865. Pixel: 0.0497, SSIM: 0.2464, Contrastive: 0.1428, 
+
+Epoch  13
+Learning rate ADC: 1.25e-07
+Training Loss: 0.5959. Pixel: 0.0312, SSIM: 0.1553, Contrastive: 0.1286, 
+Validation Loss: 0.8410. Pixel: 0.0475, SSIM: 0.2449, Contrastive: 0.1212, 
+
+Epoch  14
+Learning rate ADC: 1.25e-07
+Training Loss: 0.5941. Pixel: 0.0312, SSIM: 0.1547, Contrastive: 0.1279, 
+Validation Loss: 0.8635. Pixel: 0.0469, SSIM: 0.2336, Contrastive: 0.1612, 
+
+Epoch  15
+Learning rate ADC: 1.25e-07
+Training Loss: 0.5933. Pixel: 0.0312, SSIM: 0.1548, Contrastive: 0.1268, 
+Validation Loss: 0.8454. Pixel: 0.0469, SSIM: 0.2436, Contrastive: 0.1333, 
+
+Epoch  16
+Learning rate ADC: 1.25e-07
+Training Loss: 0.5939. Pixel: 0.0312, SSIM: 0.1551, Contrastive: 0.1267, 
+Validation Loss: 0.9000. Pixel: 0.0502, SSIM: 0.2434, Contrastive: 0.1542, 
+
+Epoch  17
+Learning rate ADC: 1.25e-07
+Training Loss: 0.5912. Pixel: 0.0311, SSIM: 0.1545, Contrastive: 0.1258, 
+Validation Loss: 0.9026. Pixel: 0.0502, SSIM: 0.2560, Contrastive: 0.1441, 
+
+Epoch  18
+Learning rate ADC: 6.25e-08
+Training Loss: 0.5901. Pixel: 0.0311, SSIM: 0.1545, Contrastive: 0.1251, 
+Validation Loss: 0.8451. Pixel: 0.0466, SSIM: 0.2409, Contrastive: 0.1378, 
+
+Epoch  19
+Learning rate ADC: 6.25e-08
+Training Loss: 0.5903. Pixel: 0.0311, SSIM: 0.1544, Contrastive: 0.1247, 
+Validation Loss: 0.8310. Pixel: 0.0466, SSIM: 0.2410, Contrastive: 0.1241, 
+
+Epoch  20
+Learning rate ADC: 6.25e-08
+Training Loss: 0.5907. Pixel: 0.0311, SSIM: 0.1547, Contrastive: 0.1247, 
+Validation Loss: 0.8873. Pixel: 0.0500, SSIM: 0.2450, Contrastive: 0.1426, 
+
+Epoch  21
+Learning rate ADC: 6.25e-08
+Training Loss: 0.5894. Pixel: 0.0311, SSIM: 0.1546, Contrastive: 0.1239, 
+Validation Loss: 0.8444. Pixel: 0.0471, SSIM: 0.2437, Contrastive: 0.1298, 
+
+Epoch  22
+Learning rate ADC: 6.25e-08
+Training Loss: 0.5891. Pixel: 0.0311, SSIM: 0.1542, Contrastive: 0.1239, 
+Validation Loss: 0.9170. Pixel: 0.0506, SSIM: 0.2462, Contrastive: 0.1652, 
+
+Epoch  23
+Learning rate ADC: 6.25e-08
+Training Loss: 0.5892. Pixel: 0.0311, SSIM: 0.1546, Contrastive: 0.1235, 
+Validation Loss: 0.8748. Pixel: 0.0488, SSIM: 0.2522, Contrastive: 0.1345, 
+
+Epoch  24
+Learning rate ADC: 6.25e-08
+Training Loss: 0.5877. Pixel: 0.0310, SSIM: 0.1543, Contrastive: 0.1229, 
+Validation Loss: 0.9138. Pixel: 0.0513, SSIM: 0.2474, Contrastive: 0.1536, 
+
+Epoch  25
+Learning rate ADC: 3.125e-08
+Training Loss: 0.5867. Pixel: 0.0310, SSIM: 0.1539, Contrastive: 0.1229, 
+Validation Loss: 0.8731. Pixel: 0.0486, SSIM: 0.2417, Contrastive: 0.1456, 
+
+Epoch  26
+Learning rate ADC: 3.125e-08
+Training Loss: 0.5863. Pixel: 0.0310, SSIM: 0.1538, Contrastive: 0.1227, 
+Validation Loss: 0.8516. Pixel: 0.0481, SSIM: 0.2500, Contrastive: 0.1210, 
+
+Epoch  27
+Learning rate ADC: 3.125e-08
+Training Loss: 0.5881. Pixel: 0.0311, SSIM: 0.1545, Contrastive: 0.1225, 
+Validation Loss: 0.9121. Pixel: 0.0509, SSIM: 0.2480, Contrastive: 0.1550, 
+
+Epoch  28
+Learning rate ADC: 3.125e-08
+Training Loss: 0.5876. Pixel: 0.0311, SSIM: 0.1541, Contrastive: 0.1224, 
+Validation Loss: 0.8437. Pixel: 0.0477, SSIM: 0.2437, Contrastive: 0.1231, 
+
+Epoch  29
+Learning rate ADC: 3.125e-08
+Training Loss: 0.5858. Pixel: 0.0310, SSIM: 0.1538, Contrastive: 0.1221, 
+Validation Loss: 0.8859. Pixel: 0.0497, SSIM: 0.2530, Contrastive: 0.1363, 
+
+Epoch  30
+Learning rate ADC: 3.125e-08
+Training Loss: 0.5848. Pixel: 0.0309, SSIM: 0.1536, Contrastive: 0.1217, 
+Validation Loss: 0.8874. Pixel: 0.0499, SSIM: 0.2471, Contrastive: 0.1415, 
+
+Epoch  31
+Learning rate ADC: 3.125e-08
+Training Loss: 0.5857. Pixel: 0.0310, SSIM: 0.1540, Contrastive: 0.1220, 
+Validation Loss: 0.8474. Pixel: 0.0480, SSIM: 0.2400, Contrastive: 0.1279, 
+
+Epoch  32
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.5858. Pixel: 0.0310, SSIM: 0.1540, Contrastive: 0.1218, 
+Validation Loss: 0.8531. Pixel: 0.0477, SSIM: 0.2390, Contrastive: 0.1372, 
+
+Epoch  33
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.5868. Pixel: 0.0311, SSIM: 0.1544, Contrastive: 0.1219, 
+Validation Loss: 0.8813. Pixel: 0.0500, SSIM: 0.2425, Contrastive: 0.1383, 
+
+Epoch  34
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.5850. Pixel: 0.0310, SSIM: 0.1536, Contrastive: 0.1214, 
+Validation Loss: 0.8782. Pixel: 0.0486, SSIM: 0.2510, Contrastive: 0.1409, 
+
+Epoch  35
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.5857. Pixel: 0.0310, SSIM: 0.1540, Contrastive: 0.1216, 
+Validation Loss: 0.8874. Pixel: 0.0492, SSIM: 0.2480, Contrastive: 0.1473, 
+
+Epoch  36
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.5852. Pixel: 0.0310, SSIM: 0.1538, Contrastive: 0.1218, 
+Validation Loss: 0.8739. Pixel: 0.0491, SSIM: 0.2502, Contrastive: 0.1330, 
+
+Epoch  37
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.5839. Pixel: 0.0309, SSIM: 0.1536, Contrastive: 0.1214, 
+Validation Loss: 0.8455. Pixel: 0.0470, SSIM: 0.2369, Contrastive: 0.1385, 
+
+Epoch  38
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.5850. Pixel: 0.0310, SSIM: 0.1544, Contrastive: 0.1209, 
+Validation Loss: 0.8355. Pixel: 0.0474, SSIM: 0.2382, Contrastive: 0.1237, 
+
+Epoch  39
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.5841. Pixel: 0.0310, SSIM: 0.1536, Contrastive: 0.1210, 
+Validation Loss: 0.8576. Pixel: 0.0481, SSIM: 0.2431, Contrastive: 0.1329, 
+
+Epoch  40
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.5850. Pixel: 0.0310, SSIM: 0.1538, Contrastive: 0.1212, 
+Validation Loss: 0.8752. Pixel: 0.0483, SSIM: 0.2438, Contrastive: 0.1486, 
+
+Epoch  41
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.5847. Pixel: 0.0310, SSIM: 0.1539, Contrastive: 0.1211, 
+Validation Loss: 0.8708. Pixel: 0.0490, SSIM: 0.2520, Contrastive: 0.1290, 
+
+Epoch  42
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.5836. Pixel: 0.0309, SSIM: 0.1538, Contrastive: 0.1207, 
+Validation Loss: 0.8481. Pixel: 0.0480, SSIM: 0.2412, Contrastive: 0.1266, 
+
+Epoch  43
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.5835. Pixel: 0.0310, SSIM: 0.1535, Contrastive: 0.1205, 
+Validation Loss: 0.8763. Pixel: 0.0484, SSIM: 0.2404, Contrastive: 0.1523, 
+
+Epoch  44
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.5840. Pixel: 0.0310, SSIM: 0.1537, Contrastive: 0.1206, 
+Validation Loss: 0.8597. Pixel: 0.0474, SSIM: 0.2466, Contrastive: 0.1390, 
+
+Epoch  45
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.5836. Pixel: 0.0309, SSIM: 0.1538, Contrastive: 0.1208, 
+Validation Loss: 0.8292. Pixel: 0.0470, SSIM: 0.2378, Contrastive: 0.1210, 
+
+Epoch  46
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.5846. Pixel: 0.0310, SSIM: 0.1537, Contrastive: 0.1208, 
+Validation Loss: 0.8942. Pixel: 0.0501, SSIM: 0.2506, Contrastive: 0.1426, 
+
+Epoch  47
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.5856. Pixel: 0.0310, SSIM: 0.1542, Contrastive: 0.1209, 
+Validation Loss: 0.9088. Pixel: 0.0516, SSIM: 0.2510, Contrastive: 0.1416, 
+
+Epoch  48
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.5830. Pixel: 0.0309, SSIM: 0.1535, Contrastive: 0.1202, 
+Validation Loss: 0.8320. Pixel: 0.0464, SSIM: 0.2357, Contrastive: 0.1327, 
+
+Epoch  49
+Learning rate ADC: 1.5625e-08
+Training Loss: 0.5841. Pixel: 0.0310, SSIM: 0.1539, Contrastive: 0.1204, 
+Validation Loss: 0.8996. Pixel: 0.0493, SSIM: 0.2463, Contrastive: 0.1601, 
+GPU Epilog Script v0.30

@@ -1,14 +1,12 @@
-import torch.optim as optim
 import torch
 from torch.nn                   import L1Loss
 from torch.utils.data           import DataLoader
-from torch.optim.lr_scheduler   import ReduceLROnPlateau
 
 from dataset.dataset        import MyDataset
 from loss                   import VGGPerceptualLoss, ssim_loss
 
-from model.train_functions  import train_evaluate, get_checkpoint_name, CHECKPOINTS_FOLDER
-from model.runet            import RUNet, RUNetv2
+from model.train_functions  import train_evaluate, get_checkpoint_name, CHECKPOINTS_FOLDER, get_scheduler
+from model.runet            import RUNet
 from arguments              import args
 
 folder = '/cluster/project7/backup_masramon/IQT/'
@@ -29,15 +27,17 @@ def main():
         folder + data_folder, 
         data_type       = 'train', 
         img_size        = args.img_size, 
+        down_factor     = args.down_factor
         is_finetune     = args.finetune, 
-        surgical_only   = args.surgical_only, 
+        use_mask        = args.masked
     )
     test_dataset = MyDataset(
         folder + data_folder, 
         data_type       = 'test', 
         img_size        = args.img_size, 
+        down_factor     = args.down_factor
         is_finetune     = args.finetune, 
-        surgical_only   = args.surgical_only, 
+        use_mask        = args.masked
     )
     
     train_dataloader = DataLoader(train_dataset, batch_size=args.train_bs, shuffle=True,  num_workers=8)
@@ -53,16 +53,8 @@ def main():
         λ_loss = {'Pixel': args.λ_pixel, 'Perceptual': 0, 'SSIM': 0}
 
         checkpoint = args.save_as if args.save_as is not None else get_checkpoint_name()
-        optimizer  = optim.Adam(model.parameters(), lr=args.lr)
-        scheduler  = ReduceLROnPlateau(
-            optimizer, 
-            'min', 
-            factor   = args.factor, 
-            patience = args.patience, 
-            cooldown = args.cooldown, 
-            min_lr   = 1e-8
-        )
-        train_evaluate(model, train_dataloader, test_dataloader, optimizer, scheduler, args.n_epochs_1, checkpoint+'_stage_1', losses, λ_loss)
+        optimizer, scheduler = get_scheduler(model, args) 
+        train_evaluate(model, train_dataloader, test_dataloader, optimizer, scheduler, args.n_epochs, checkpoint+'_stage_1', losses, λ_loss)
     else:
         checkpoint = args.save_as if args.save_as is not None else args.checkpoint
 
@@ -74,15 +66,7 @@ def main():
     print('Loading best weights from stage 1...')
     model.load_state_dict(torch.load(f'{CHECKPOINTS_FOLDER}{checkpoint}_stage_1_best.pth'))
 
-    optimizer = optim.Adam(model.parameters(), lr=args.lr*args.lr_factor)
-    scheduler = ReduceLROnPlateau(
-        optimizer, 
-        'min', 
-        factor   = args.factor, 
-        patience = args.patience, 
-        cooldown = args.cooldown, 
-        min_lr   = 1e-7
-    )
+    optimizer, scheduler = get_scheduler(model, args, lr=args.lr_2)
     train_evaluate(model, train_dataloader, test_dataloader, optimizer, scheduler, args.n_epochs_2, checkpoint+'_stage_2', losses, λ_loss)
 
 

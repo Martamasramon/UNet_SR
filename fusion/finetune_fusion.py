@@ -2,7 +2,7 @@ import torch
 from torch.nn                   import L1Loss
 from torch.utils.data           import DataLoader
 
-from train_functions    import train_evaluate_adc, get_scheduler, CHECKPOINTS_ADC, CHECKPOINTS_T2W
+from fusion_train_functions    import train_evaluate_adc, get_scheduler, CHECKPOINTS_ADC, CHECKPOINTS_T2W
 
 import sys
 import os
@@ -72,8 +72,8 @@ def main():
     # Train with frozen encoder
     print('Starting training stage 1 (frozen encoder)...')
     model_adc            = freeze_encoder(model_adc)
-    optim_adc, sched_adc = get_scheduler(model_adc, args, args.lr_1)
-    train_evaluate_adc(model_adc, model_t2w, train_dl, test_dl, optim_adc, sched_adc, args.n_epochs_1, checkpoint_adc + '_1', losses, λ_loss)
+    optim_adc, sched_adc = get_scheduler(model_adc, args)
+    train_evaluate_adc(model_adc, model_t2w, train_dl, test_dl, optim_adc, sched_adc, args.n_epochs, checkpoint_adc + '_1', losses, λ_loss)
 
     # Finetune encoder
     print('Starting training stage 2 (unfrozen)...')

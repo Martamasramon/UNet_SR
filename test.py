@@ -4,7 +4,7 @@ from dataset.dataset      import MyDataset
 from model.runet          import RUNet, RUNet_768, RUNet_fusion
 from model.test_functions import visualize_results, evaluate_results
 from torch.utils.data     import DataLoader
-from fusion.train_functions import CHECKPOINTS_ADC
+from fusion.train_functions import CHECKPOINTS_ADC, CHECKPOINTS_T2W
 from arguments              import args
 
 import sys
@@ -26,6 +26,7 @@ def main():
         folder + data_folder, 
         data_type       = 'val', 
         img_size        = args.img_size, 
+        down_factor     = args.down_factor,
         is_finetune     = args.finetune, 
         use_T2W         = args.use_T2W, 
     )
@@ -47,16 +48,18 @@ def main():
     if args.checkpoint_t2w is not None:
         # Load pre-trained T2W embedding model
         print(f'Loading T2W reconstruction UNet from {args.checkpoint_t2w}')
-        self.t2w_model = T2Wnet(args.drop_first, args.drop_last, img_size=img_size).to(device)
-        self.t2w_model.load_state_dict(torch.load(f'{CHECKPOINTS_T2W}{args.checkpoint_t2w}.pth'))
-        self.t2w_model.eval() 
+        t2w_model = T2Wnet(args.drop_first, args.drop_last, img_size=args.img_size).to(device)
+        t2w_model.load_state_dict(torch.load(f'{CHECKPOINTS_T2W}{args.checkpoint_t2w}.pth'))
+        t2w_model.eval() 
+    else:
+        t2w_model = None
 
     save_name = args.checkpoint+'_HistoMRI' if args.finetune else args.checkpoint+'_PICAI' 
-    visualize_results(model, dataset, device, save_name, use_T2W=args.use_T2W, batch_size=args.test_bs)
+    visualize_results(model, t2w_model, dataset, device, save_name, args.use_T2W, args.test_bs, args.fusion)
 
     ## EVALUATE
     dataloader = DataLoader(dataset,  batch_size=args.test_bs,  shuffle=False)
-    evaluate_results(model, dataloader, device, args.test_bs, use_T2W=args.use_T2W)
+    evaluate_results(model, t2w_model, dataloader, device, args.test_bs, args.fusion)
 
 
 if __name__ == '__main__':

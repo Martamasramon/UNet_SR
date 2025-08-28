@@ -6,16 +6,16 @@ from PIL import Image
 import random
 
 class Resize(object):
-  def __init__(self, output_size, scale_factor, same_size_input_label=True):
+  def __init__(self, output_size, down_factor, same_size_input_label=True):
     self.output_size  = output_size
-    self.scale_factor = scale_factor
+    self.down_factor = down_factor
     self.same_size_input_label = same_size_input_label
 
   def __call__(self, sample):
     image = sample['lowres']
 
     h, w  = image.shape[:2]
-    down_size = self.output_size // self.scale_factor
+    down_size = self.output_size // self.down_factor
     
     image = transform.resize(image, (down_size, down_size),preserve_range=True)
     if self.same_size_input_label:
@@ -92,19 +92,19 @@ class RandomHorFlip(object):
     return sample
 
 
-def get_train_transform(img_size=64, scale_factor=2, same_size_input_label=True):
+def get_train_transform(img_size=64, down_factor=2, same_size_input_label=True):
   return T.Compose([
       CenterCrop(img_size),
-      Resize(img_size,scale_factor=scale_factor, same_size_input_label=same_size_input_label),
+      Resize(img_size,down_factor=down_factor, same_size_input_label=same_size_input_label),
       RandomHorFlip(),
       ToTensor(),
       DownscaleBlurUpscale(3, 0.2)
   ])
 
-def get_test_transform(img_size=64, scale_factor=2, same_size_input_label=True):
+def get_test_transform(img_size=64, down_factor=2, same_size_input_label=True):
   return T.Compose([
       CenterCrop(img_size),
-      Resize(img_size,scale_factor=scale_factor, same_size_input_label=same_size_input_label),
+      Resize(img_size,down_factor=down_factor, same_size_input_label=same_size_input_label),
       ToTensor(),
   ])
 

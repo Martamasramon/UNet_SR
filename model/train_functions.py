@@ -1,8 +1,26 @@
 import numpy as np
 import torch
 from datetime       import datetime
+import torch.optim as optim
+from torch.optim.lr_scheduler   import ReduceLROnPlateau
 
 CHECKPOINTS_FOLDER = '/cluster/project7/ProsRegNet_CellCount/UNet_SR/checkpoints/'
+
+def get_scheduler(model, args, lr=None):
+    if lr is not None:
+        optimizer = optim.Adam(model.parameters(), lr = lr)
+    else:
+        optimizer = optim.Adam(model.parameters(), lr = args.lr)
+        
+    scheduler = ReduceLROnPlateau(
+        optimizer, 
+        'min', 
+        factor   = args.factor, 
+        patience = args.patience, 
+        cooldown = args.cooldown, 
+        min_lr   = 1e-8
+    )
+    return optimizer, scheduler
 
 def get_checkpoint_name():
     now = datetime.now()
