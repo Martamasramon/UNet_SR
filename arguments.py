@@ -16,17 +16,13 @@ parser.set_defaults(use_histo=False)
 # For a single training phase
 parser.add_argument('--n_epochs',   type=int,   default=50)
 parser.add_argument('--lr',         type=float, default=1e-6)
-
 # Multiple training phases
-parser.add_argument('--n_epochs_1', type=int,   default=50)
 parser.add_argument('--n_epochs_2', type=int,   default=50)
-parser.add_argument('--lr_1',       type=float, default=1e-7)
 parser.add_argument('--lr_2',       type=float, default=1e-7)
 
 parser.add_argument('--factor',     type=float, default=0.5)
 parser.add_argument('--patience',   type=int,   default=4)
 parser.add_argument('--cooldown',   type=int,   default=2)
-parser.add_argument('--lr_factor',  type=float, default=0.1)
 
 parser.add_argument('--λ_pixel',    type=float, default=10.0)
 parser.add_argument('--λ_perct',    type=float, default=0.01)

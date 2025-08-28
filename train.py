@@ -27,7 +27,7 @@ def main():
         folder + data_folder, 
         data_type       = 'train', 
         img_size        = args.img_size, 
-        down_factor     = args.down_factor
+        down_factor     = args.down_factor,
         is_finetune     = args.finetune, 
         use_mask        = args.masked
     )
@@ -35,7 +35,7 @@ def main():
         folder + data_folder, 
         data_type       = 'test', 
         img_size        = args.img_size, 
-        down_factor     = args.down_factor
+        down_factor     = args.down_factor,
         is_finetune     = args.finetune, 
         use_mask        = args.masked
     )

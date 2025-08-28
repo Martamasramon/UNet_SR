@@ -53,6 +53,7 @@ def main():
         folder + data_folder, 
         data_type       = 'train', 
         img_size        = args.img_size, 
+        down_factor     = args.down_factor,
         is_finetune     = args.finetune, 
         use_T2W         = True, 
     )
@@ -60,6 +61,7 @@ def main():
         folder + data_folder, 
         data_type       = 'test', 
         img_size        = args.img_size, 
+        down_factor     = args.down_factor,
         is_finetune     = args.finetune, 
         use_T2W         = True, 
     )
