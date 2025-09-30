@@ -13,6 +13,8 @@ from fusion.fusion_train_functions import CHECKPOINTS_ADC, CHECKPOINTS_T2W
 sys.path.append(os.path.abspath('/cluster/project7/ProsRegNet_CellCount/UNet/runet_t2w'))
 from runetv2 import RUNet as T2Wnet
 
+folder = '/cluster/project7/backup_masramon/IQT/'
+
 class MyDataset(Dataset):
   def __init__(
       self, 
@@ -30,7 +32,7 @@ class MyDataset(Dataset):
             root += '_surgical'
     
     self.masked     = '_mask' if use_mask else ''
-    self.img_path   = img_path
+    self.img_path   = folder + img_path
     self.img_dict   = pd.read_csv(f'/cluster/project7/ProsRegNet_CellCount/Dataset_preparation/{root}{self.masked}_{data_type}.csv')
     self.transform  = get_train_transform(img_size, down_factor) if data_type=='train' else get_test_transform(img_size, down_factor)
     self.t2w_transform = get_t2w_transform(img_size)

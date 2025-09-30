@@ -9,8 +9,6 @@ from model.train_functions  import train_evaluate, get_checkpoint_name, CHECKPOI
 from model.runet            import RUNet
 from arguments              import args
 
-folder = '/cluster/project7/backup_masramon/IQT/'
-
 def main():
     device  = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -24,18 +22,18 @@ def main():
     data_folder = 'HistoMRI' if args.finetune else 'PICAI'
 
     train_dataset = MyDataset(
-        folder + data_folder, 
+        data_folder, 
         data_type       = 'train', 
         img_size        = args.img_size, 
-        down_factor     = args.down_factor,
+        down_factor     = args.down,
         is_finetune     = args.finetune, 
         use_mask        = args.masked
     )
     test_dataset = MyDataset(
-        folder + data_folder, 
+        data_folder, 
         data_type       = 'test', 
         img_size        = args.img_size, 
-        down_factor     = args.down_factor,
+        down_factor     = args.down,
         is_finetune     = args.finetune, 
         use_mask        = args.masked
     )

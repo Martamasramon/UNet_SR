@@ -136,3 +136,6 @@ road_segmentation_ideal/*
 Train_UNet.*
 
 *.pth
+*.pt
+
+autoencoder/

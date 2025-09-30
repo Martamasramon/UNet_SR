@@ -4,15 +4,13 @@ from dataset.dataset      import MyDataset
 from model.runet          import RUNet, RUNet_768, RUNet_fusion
 from model.test_functions import visualize_results, evaluate_results
 from torch.utils.data     import DataLoader
-from fusion.train_functions import CHECKPOINTS_ADC, CHECKPOINTS_T2W
+from fusion.fusion_train_functions import CHECKPOINTS_ADC, CHECKPOINTS_T2W
 from arguments              import args
 
 import sys
 import os
 sys.path.append(os.path.abspath('/cluster/project7/ProsRegNet_CellCount/UNet/runet_t2w'))
 from runetv2 import RUNet as T2Wnet
-
-folder = '/cluster/project7/backup_masramon/IQT/'
         
 def main():
     # Set device
@@ -23,10 +21,10 @@ def main():
     data_folder = 'HistoMRI' if args.finetune else 'PICAI'
 
     dataset = MyDataset(
-        folder + data_folder, 
+        data_folder, 
         data_type       = 'val', 
         img_size        = args.img_size, 
-        down_factor     = args.down_factor,
+        down_factor     = args.down,
         is_finetune     = args.finetune, 
         use_T2W         = args.use_T2W, 
     )
@@ -54,6 +52,7 @@ def main():
     else:
         t2w_model = None
 
+    ## VISUALISE
     save_name = args.checkpoint+'_HistoMRI' if args.finetune else args.checkpoint+'_PICAI' 
     visualize_results(model, t2w_model, dataset, device, save_name, args.use_T2W, args.test_bs, args.fusion)
 

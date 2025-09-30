@@ -15,23 +15,28 @@ def compute_metrics(pred, gt):
     ssim = ssim_metric(gt_np, pred_np, data_range=1.0)
     return mse, psnr, ssim
 
-def evaluate_results(model, model_t2w, dataloader, device, batch_size, fusion):
+def evaluate_results(model, model_t2w, dataloader, device, batch_size, fusion, ae_mode=False):
     mse_list, psnr_list, ssim_list = [], [], []
     
     for batch in dataloader:
-        lowres    = batch['lowres'].to(device)
-        highres   = batch['highres'].to(device)
-        ###  FIX THIS
-        
         with torch.no_grad():
-            if fusion:
-                _, embed = model_t2w(batch['T2W'].float().cuda())
-                pred,_   = model(lowres, torch.squeeze(embed.to(device)))
+            if ae_mode:
+                input_img  = batch.data.to(device)  
+                target_img = batch.data.to(device)  
+                
+                pred_img   = model(batch).recon_x
             else:
-                pred,_   = model(lowres)
+                input_img  = batch['lowres'].to(device)
+                target_img = batch['highres'].to(device)
+                
+                if fusion:
+                    _, embed   = model_t2w(batch['T2W'].float().cuda())
+                    pred_img,_ = model(input_img, torch.squeeze(embed.to(device)))
+                else:
+                    pred_img,_ = model(input_img)
         
-        for j in range(pred.size(0)):
-            mse, psnr, ssim = compute_metrics(pred[j], highres[j])
+        for j in range(pred_img.size(0)):
+            mse, psnr, ssim = compute_metrics(pred_img[j], target_img[j])
             mse_list.append(mse)
             psnr_list.append(psnr)
             ssim_list.append(ssim)
@@ -51,7 +56,7 @@ def plot_image(image, fig, axes, i, j, colorbar=True):
     if colorbar:
         fig.colorbar(img_plot, ax=axes[i, j])
     
-def visualize_results(model, model_t2w, dataset, device, name, use_T2W, batch_size, fusion, seed=1):
+def visualize_results(model, model_t2w, dataset, device, name, use_T2W, batch_size, fusion, ae_mode=False, seed=1):
     ncols = 5 if use_T2W else 4
     fig, axes = plt.subplots(nrows=batch_size, ncols=ncols, figsize=(3*ncols,3*batch_size))
     axes[0,0].set_title('Low res (Input)')
@@ -68,28 +73,34 @@ def visualize_results(model, model_t2w, dataset, device, name, use_T2W, batch_si
     with torch.no_grad():
         for i, ind in enumerate(indices):
             sample = dataset[ind]
-            lowres    = sample['lowres'].unsqueeze(0).float().to(device)
-            highres   = sample['highres'].unsqueeze(0).float().to(device)
             
             # Use model to get prediction
-            if use_T2W:
-                t2w_image = sample['T2W'].to(device)
-            if fusion:
-                _, t2w_embed = model_t2w(t2w_image.unsqueeze(0).float().cuda())
-                pred, _   = model(lowres, t2w_embed)
+            if ae_mode:
+                input_img  = sample.data.unsqueeze(0).float().to(device)
+                target_img = sample.data.unsqueeze(0).float().to(device)
+                pred_img   = model(sample).recon_x
             else:
-                pred,_ = model(lowres)
+                input_img  = sample['lowres'].unsqueeze(0).float().to(device)
+                target_img = sample['highres'].unsqueeze(0).float().to(device)
+                
+                if use_T2W:
+                    t2w_image = sample['T2W'].to(device)
+                if fusion:
+                    _, t2w_embed = model_t2w(t2w_image.unsqueeze(0).float().cuda())
+                    pred_img, _  = model(input_img, t2w_embed)
+                else:
+                    pred_img, _  = model(input_img)
             
             # Plot images
-            plot_image(lowres,  fig, axes, i, 0)
-            plot_image(pred,    fig, axes, i, 1)
-            plot_image(pred,    fig, axes, i, 2, False)
-            plot_image(highres, fig, axes, i, 3)
+            plot_image(input_img,  fig, axes, i, 0)
+            plot_image(pred_img,   fig, axes, i, 1)
+            plot_image(pred_img,   fig, axes, i, 2, False)
+            plot_image(target_img, fig, axes, i, 3)
             if use_T2W:
                 plot_image(t2w_image, fig, axes, i, 4)
 
             # Error
-            err = np.abs(format_image(pred) - format_image(highres))
+            err = np.abs(format_image(pred_img) - format_image(target_img))
             p99 = np.percentile(err, 99.5)
             den = p99 if p99 > 1e-8 else (err.max() + 1e-8)
             err_norm = np.clip(err / den, 0, 1)
@@ -99,5 +110,8 @@ def visualize_results(model, model_t2w, dataset, device, name, use_T2W, batch_si
             
             
         fig.tight_layout(pad=0.25)
-        plt.savefig(f'./results/image_{name}.jpg')
+        if ae_mode:
+            plt.savefig(f'./results_ae/image_{name}.jpg')
+        else:
+            plt.savefig(f'./results/image_{name}.jpg')
         plt.close()
